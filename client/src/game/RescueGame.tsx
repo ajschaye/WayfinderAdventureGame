@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRescueGame, ObstacleType } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Confetti } from '../components/game/Confetti';
+import { useIsMobile } from '../hooks/use-is-mobile';
 import fireTruckSvg from './assets/fire-truck.svg';
 import fireSvg from './assets/fire.svg';
 import obstacleSvg from './assets/obstacle.svg';
@@ -31,6 +32,9 @@ const RescueGame: React.FC = () => {
   } = useRescueGame();
 
   const { toggleMute, isMuted, playHit, playSuccess, playClapping, playWaterSpray, backgroundMusic } = useAudio();
+  
+  // Check if the user is on a mobile device
+  const isMobile = useIsMobile();
 
   // Local state for input values
   const [gridSizeInput, setGridSizeInput] = useState(gridSize.x);
@@ -130,6 +134,40 @@ const RescueGame: React.FC = () => {
         break;
       default:
         return;
+    }
+  }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
+
+  // Handle touch directional controls
+  const handleTouchMove = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
+    if (gameState !== 'playing' || isSprayingWater) return;
+    
+    // Check if next to fire and would move towards the fire
+    if (isNextToFire) {
+      const wouldMoveToFire = 
+        (direction === 'right') && fireTruckPosition.x < firePosition.x ||
+        (direction === 'left') && fireTruckPosition.x > firePosition.x ||
+        (direction === 'down') && fireTruckPosition.y < firePosition.y ||
+        (direction === 'up') && fireTruckPosition.y > firePosition.y;
+      
+      if (wouldMoveToFire && handleFireExtinguishing()) {
+        return;
+      }
+    }
+    
+    // Normal movement
+    switch (direction) {
+      case 'up':
+        moveTruck(0, -1);
+        break;
+      case 'down':
+        moveTruck(0, 1);
+        break;
+      case 'left':
+        moveTruck(-1, 0);
+        break;
+      case 'right':
+        moveTruck(1, 0);
+        break;
     }
   }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
 
@@ -494,6 +532,114 @@ const RescueGame: React.FC = () => {
         </div>
       )}
       
+      {/* Touch Controls for Mobile */}
+      {isMobile && gameState === "playing" && (
+        <div style={{
+          position: "fixed",
+          bottom: "70px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateRows: "repeat(3, 1fr)",
+          gap: "5px",
+          width: "180px",
+          height: "180px",
+          zIndex: 100
+        }}>
+          {/* Up button */}
+          <div style={{ gridColumn: 2, gridRow: 1 }}>
+            <button
+              onTouchStart={() => handleTouchMove('up')}
+              style={{
+                width: "60px",
+                height: "60px",
+                backgroundColor: "#ffd166",
+                border: "none",
+                borderRadius: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+                cursor: "pointer"
+              }}
+              aria-label="Move Up"
+            >
+              <ArrowUp size={30} color="#d62828" />
+            </button>
+          </div>
+          
+          {/* Left button */}
+          <div style={{ gridColumn: 1, gridRow: 2 }}>
+            <button
+              onTouchStart={() => handleTouchMove('left')}
+              style={{
+                width: "60px",
+                height: "60px",
+                backgroundColor: "#ffd166",
+                border: "none",
+                borderRadius: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+                cursor: "pointer"
+              }}
+              aria-label="Move Left"
+            >
+              <ArrowLeft size={30} color="#d62828" />
+            </button>
+          </div>
+          
+          {/* Center - Empty */}
+          <div style={{ gridColumn: 2, gridRow: 2 }}></div>
+          
+          {/* Right button */}
+          <div style={{ gridColumn: 3, gridRow: 2 }}>
+            <button
+              onTouchStart={() => handleTouchMove('right')}
+              style={{
+                width: "60px",
+                height: "60px",
+                backgroundColor: "#ffd166",
+                border: "none",
+                borderRadius: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+                cursor: "pointer"
+              }}
+              aria-label="Move Right"
+            >
+              <ArrowRight size={30} color="#d62828" />
+            </button>
+          </div>
+          
+          {/* Down button */}
+          <div style={{ gridColumn: 2, gridRow: 3 }}>
+            <button
+              onTouchStart={() => handleTouchMove('down')}
+              style={{
+                width: "60px",
+                height: "60px",
+                backgroundColor: "#ffd166",
+                border: "none",
+                borderRadius: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+                cursor: "pointer"
+              }}
+              aria-label="Move Down"
+            >
+              <ArrowDown size={30} color="#d62828" />
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Game instructions */}
       {(gameState === "ready" || gameState === "playing") && (
         <div style={{
@@ -505,7 +651,11 @@ const RescueGame: React.FC = () => {
           padding: "0 20px",
           boxSizing: "border-box"
         }}>
-          <p style={{ fontSize: "18px", marginBottom: "8px" }}>Use arrow keys (or WASD) to move the fire truck to the fire!</p>
+          <p style={{ fontSize: "18px", marginBottom: "8px" }}>
+            {isMobile ? 
+              "Use the on-screen buttons to move the fire truck to the fire!" :
+              "Use arrow keys (or WASD) to move the fire truck to the fire!"}
+          </p>
           {gameState === "ready" && <p style={{ fontSize: "18px", margin: 0 }}>Press the Play button to begin.</p>}
         </div>
       )}
