@@ -79,6 +79,20 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     return { x, y };
   };
   
+  // Helper to get a random obstacle type
+  const getRandomObstacleType = (): ObstacleType => {
+    const obstacleTypes: ObstacleType[] = [
+      "puddle",
+      "fallen-tree",
+      "traffic-cone",
+      "bouncing-ball",
+      "goose"
+    ];
+    
+    const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
+    return obstacleTypes[randomIndex];
+  };
+  
   // Initialize or reset the game
   const initializeGame = () => {
     const { gridSize, obstacleCount } = get();
@@ -95,7 +109,7 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     } while (fireX === truckX && fireY === truckY);
     
     // Generate obstacles
-    const newObstacles: Position[] = [];
+    const newObstacles: Obstacle[] = [];
     
     // Create a reference to current state for getRandomPosition
     set(state => {
@@ -111,7 +125,8 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
         if (i >= gridSize.x * gridSize.y - 2) break; // Safety check
         
         const newPos = getRandomPosition();
-        newObstacles.push(newPos);
+        const obstacleType = getRandomObstacleType();
+        newObstacles.push({ ...newPos, type: obstacleType });
       }
       
       return {
@@ -129,11 +144,12 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     gameState: "ready" as GameState,
     fireTruckPosition: { x: 2, y: 4 },  // Default position at bottom center of 5x5 grid
     firePosition: { x: 2, y: 0 },       // Default position at top center of 5x5 grid
-    obstacles: [],
+    obstacles: [] as Obstacle[],
     moveCooldown: false,
     
     // Methods
     getRandomPosition,
+    getRandomObstacleType,
     
     // Set grid size
     setGridSize: (x: number, y: number) => {
