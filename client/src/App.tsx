@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useAudio } from "./lib/stores/useAudio";
 import "@fontsource/inter";
-import RescueGame from "./game/RescueGame";
+
+// Lazy load the game component to avoid import issues
+const RescueGame = lazy(() => import("./game/RescueGame"));
 
 // Main App component
 function App() {
   const { setBackgroundMusic, setHitSound, setSuccessSound } = useAudio();
+  const [loaded, setLoaded] = useState(false);
 
   // Load audio assets
   useEffect(() => {
@@ -28,11 +31,26 @@ function App() {
     } catch (error) {
       console.error("Error loading audio:", error);
     }
+    
+    // Mark assets as loaded
+    setLoaded(true);
   }, [setBackgroundMusic, setHitSound, setSuccessSound]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#f0f0f0' }}>
-      <RescueGame />
+    <div style={{ 
+      width: '100vw', 
+      height: '100vh', 
+      position: 'relative', 
+      overflow: 'auto', 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      background: '#e63946', // Red background as requested
+      color: 'white'
+    }}>
+      <Suspense fallback={<div>Loading Rescue Adventure...</div>}>
+        <RescueGame />
+      </Suspense>
     </div>
   );
 }

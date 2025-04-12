@@ -87,8 +87,8 @@ const RescueGame: React.FC = () => {
 
   // Calculate cell size based on the grid dimensions
   const cellSize = Math.min(
-    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.8 / gridSize.x),
-    60
+    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.6 / gridSize.x),
+    50
   );
 
   return (
@@ -99,7 +99,11 @@ const RescueGame: React.FC = () => {
       fontFamily: "'Inter', sans-serif",
       maxWidth: '800px',
       margin: '0 auto',
-      padding: '20px'
+      padding: '20px',
+      overflow: 'auto',
+      height: '100%',
+      maxHeight: '100vh',
+      backgroundColor: '#e63946' // Red background as requested
     }}>
       {/* Game title */}
       <div style={{
@@ -109,14 +113,103 @@ const RescueGame: React.FC = () => {
         width: "100%",
         textAlign: "center",
         marginBottom: "20px",
-        color: "black",
+        color: "white",
         fontWeight: "bold",
-        fontSize: "24px"
+        fontSize: "24px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
       }}>
         {gameState === "won" ? "You Win! 🎉" : "Rescue Adventure"}
       </div>
       
-      {/* Game grid */}
+      {/* Game controls - Moved under title as requested */}
+      <div style={{
+        backgroundColor: "white",
+        borderRadius: "8px",
+        padding: "15px",
+        width: "100%",
+        marginBottom: "15px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+      }}>
+        <h2 style={{ margin: "0 0 10px 0", textAlign: "center" }}>Controls</h2>
+        
+        {/* Grid size control */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <label htmlFor="gridSize">Size of grid:</label>
+          <input
+            id="gridSize"
+            type="range"
+            min="3"
+            max="10"
+            value={gridSizeInput}
+            onChange={(e) => setGridSizeInput(parseInt(e.target.value))}
+            disabled={gameState === "playing"}
+            style={{ width: "50%" }}
+          />
+          <span>{gridSizeInput} x {gridSizeInput}</span>
+        </div>
+        
+        {/* Obstacle count control */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <label htmlFor="obstacles">Number of obstacles:</label>
+          <input
+            id="obstacles"
+            type="range"
+            min="0"
+            max={Math.min(10, Math.floor(gridSizeInput * gridSizeInput / 3))}
+            value={obstacleCountInput}
+            onChange={(e) => setObstacleCountInput(parseInt(e.target.value))}
+            disabled={gameState === "playing"}
+            style={{ width: "50%" }}
+          />
+          <span>{obstacleCountInput}</span>
+        </div>
+        
+        {/* Sound toggle */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <label htmlFor="sound">Sound:</label>
+          <button
+            onClick={toggleMute}
+            style={{
+              backgroundColor: isMuted ? "#e0e0e0" : "#4CAF50",
+              border: "none",
+              color: isMuted ? "black" : "white",
+              padding: "5px 10px",
+              borderRadius: "4px",
+              cursor: "pointer"
+            }}
+          >
+            {isMuted ? "Turn On" : "Turn Off"}
+          </button>
+        </div>
+      </div>
+      
+      {/* Start/stop button - Changed label as requested */}
+      <div style={{
+        backgroundColor: "#77c3f9",
+        borderRadius: "50px",
+        padding: "10px 30px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        marginBottom: "20px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+        color: "white"
+      }}
+      onClick={() => {
+        if (gameState === "playing") {
+          stopGame();
+        } else if (gameState === "ready" || gameState === "stopped") {
+          startGame();
+        } else if (gameState === "won") {
+          resetGame();
+        }
+      }}>
+        {gameState === "playing" ? "Stop" : gameState === "won" ? "Play Again" : "Play"}
+      </div>
+      
+      {/* Game grid - Keep after controls */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
@@ -126,7 +219,10 @@ const RescueGame: React.FC = () => {
         padding: '10px',
         borderRadius: '8px',
         position: 'relative',
-        marginBottom: '20px'
+        marginBottom: '20px',
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+        maxWidth: '100%',
+        overflowX: 'auto'
       }}>
         {/* Generate grid cells */}
         {Array.from({ length: gridSize.y }).map((_, y) =>
@@ -194,96 +290,11 @@ const RescueGame: React.FC = () => {
           })
         )}
       </div>
-
-      {/* Game controls */}
-      <div style={{
-        backgroundColor: "white",
-        borderRadius: "8px",
-        padding: "15px",
-        width: "100%",
-        marginBottom: "15px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px"
-      }}>
-        <h2 style={{ margin: "0 0 10px 0", textAlign: "center" }}>Controls</h2>
-        
-        {/* Grid size control */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <label htmlFor="gridSize">Size of grid:</label>
-          <input
-            id="gridSize"
-            type="range"
-            min="3"
-            max="10"
-            value={gridSizeInput}
-            onChange={(e) => setGridSizeInput(parseInt(e.target.value))}
-            disabled={gameState === "playing"}
-            style={{ width: "50%" }}
-          />
-          <span>{gridSizeInput} x {gridSizeInput}</span>
-        </div>
-        
-        {/* Obstacle count control */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <label htmlFor="obstacles">Number of obstacles:</label>
-          <input
-            id="obstacles"
-            type="range"
-            min="0"
-            max={Math.min(10, Math.floor(gridSizeInput * gridSizeInput / 3))}
-            value={obstacleCountInput}
-            onChange={(e) => setObstacleCountInput(parseInt(e.target.value))}
-            disabled={gameState === "playing"}
-            style={{ width: "50%" }}
-          />
-          <span>{obstacleCountInput}</span>
-        </div>
-        
-        {/* Sound toggle */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <label htmlFor="sound">Sound:</label>
-          <button
-            onClick={toggleMute}
-            style={{
-              backgroundColor: isMuted ? "#e0e0e0" : "#4CAF50",
-              border: "none",
-              color: isMuted ? "black" : "white",
-              padding: "5px 10px",
-              borderRadius: "4px",
-              cursor: "pointer"
-            }}
-          >
-            {isMuted ? "Turn On" : "Turn Off"}
-          </button>
-        </div>
-      </div>
-      
-      {/* Start/stop button */}
-      <div style={{
-        backgroundColor: "#77c3f9",
-        borderRadius: "50px",
-        padding: "10px 30px",
-        cursor: "pointer",
-        fontWeight: "bold",
-        marginBottom: "20px"
-      }}
-      onClick={() => {
-        if (gameState === "playing") {
-          stopGame();
-        } else if (gameState === "ready" || gameState === "stopped") {
-          startGame();
-        } else if (gameState === "won") {
-          resetGame();
-        }
-      }}>
-        {gameState === "playing" ? "Stop" : gameState === "won" ? "Play Again" : "Start"}
-      </div>
       
       {/* Win message */}
       {gameState === "won" && (
         <div style={{
-          backgroundColor: "rgba(76, 175, 80, 0.8)",
+          backgroundColor: "rgba(76, 175, 80, 0.9)",
           color: "white",
           padding: "20px",
           borderRadius: "8px",
@@ -294,7 +305,8 @@ const RescueGame: React.FC = () => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          zIndex: 100
+          zIndex: 100,
+          boxShadow: "0 4px 8px rgba(0,0,0,0.3)"
         }}>
           Great job! You put out the fire! 🚒
         </div>
@@ -303,14 +315,15 @@ const RescueGame: React.FC = () => {
       {/* Game instructions when ready */}
       {gameState === "ready" && (
         <div style={{
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
           padding: "15px",
           borderRadius: "8px",
           maxWidth: "400px",
-          textAlign: "center"
+          textAlign: "center",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
         }}>
           <p>Use arrow keys (or WASD) to move the fire truck to the fire!</p>
-          <p>Press the Start button to begin.</p>
+          <p>Press the Play button to begin.</p>
         </div>
       )}
 
