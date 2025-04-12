@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRescueGame, ObstacleType } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
-import { Volume2, VolumeX, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { Confetti } from '../components/game/Confetti';
 import { useIsMobile } from '../hooks/use-is-mobile';
 import fireTruckSvg from './assets/fire-truck.svg';
@@ -137,8 +137,16 @@ const RescueGame: React.FC = () => {
     }
   }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
 
-  // Handle touch directional controls
-  const handleTouchMove = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
+  // References for swipe detection
+  const touchStartRef = useRef<{ x: number, y: number } | null>(null);
+  const touchTimeoutRef = useRef<number | null>(null);
+  
+  // State for swipe feedback
+  const [swipeDirection, setSwipeDirection] = useState<string | null>(null);
+  const swipeFeedbackTimeoutRef = useRef<number | null>(null);
+  
+  // Handle swipe directional controls
+  const handleSwipe = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
     if (gameState !== 'playing' || isSprayingWater) return;
     
     // Check if next to fire and would move towards the fire
@@ -170,6 +178,87 @@ const RescueGame: React.FC = () => {
         break;
     }
   }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
+
+  // Handle touch start
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (gameState !== 'playing' || isSprayingWater) return;
+    
+    // Store the initial touch position
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    
+    // Clear any existing timeout
+    if (touchTimeoutRef.current !== null) {
+      window.clearTimeout(touchTimeoutRef.current);
+    }
+  }, [gameState, isSprayingWater]);
+
+  // Handle touch end
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (gameState !== 'playing' || !touchStartRef.current || isSprayingWater) return;
+    
+    const touch = e.changedTouches[0];
+    const endX = touch.clientX;
+    const endY = touch.clientY;
+    
+    const startX = touchStartRef.current.x;
+    const startY = touchStartRef.current.y;
+    
+    // Calculate distance and angle
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Only register as a swipe if the distance is significant
+    if (distance < 20) return;
+    
+    // Determine swipe direction
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    
+    let direction: 'up' | 'down' | 'left' | 'right';
+    
+    if (absX > absY) {
+      // Horizontal swipe
+      if (dx > 0) {
+        direction = 'right';
+      } else {
+        direction = 'left';
+      }
+    } else {
+      // Vertical swipe
+      if (dy > 0) {
+        direction = 'down';
+      } else {
+        direction = 'up';
+      }
+    }
+    
+    // Show visual feedback for the swipe
+    setSwipeDirection(direction);
+    
+    // Clear any existing swipe feedback timeout
+    if (swipeFeedbackTimeoutRef.current !== null) {
+      window.clearTimeout(swipeFeedbackTimeoutRef.current);
+    }
+    
+    // Hide swipe feedback after a short delay
+    swipeFeedbackTimeoutRef.current = window.setTimeout(() => {
+      setSwipeDirection(null);
+      swipeFeedbackTimeoutRef.current = null;
+    }, 500);
+    
+    // Perform the swipe action
+    handleSwipe(direction);
+    
+    // Reset the touch start position
+    touchStartRef.current = null;
+    
+    // Add a short cooldown to prevent multiple swipes
+    touchTimeoutRef.current = window.setTimeout(() => {
+      touchTimeoutRef.current = null;
+    }, 200);
+  }, [gameState, isSprayingWater, handleSwipe]);
 
   // Add and remove event listeners
   useEffect(() => {
@@ -364,14 +453,18 @@ const RescueGame: React.FC = () => {
         justifyContent: 'center',
         overflow: 'visible'
       }}>
-        {/* Game grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
-          gridTemplateRows: `repeat(${gridSize.y}, ${cellSize}px)`,
-          gap: '2px',
-          minWidth: 'fit-content'
-        }}>
+        {/* Game grid with touch event handlers */}
+        <div 
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
+            gridTemplateRows: `repeat(${gridSize.y}, ${cellSize}px)`,
+            gap: '2px',
+            minWidth: 'fit-content'
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Generate grid cells */}
           {Array.from({ length: gridSize.y }).map((_, y) =>
             Array.from({ length: gridSize.x }).map((_, x) => {
@@ -508,6 +601,30 @@ const RescueGame: React.FC = () => {
         </div>
       </div>
       
+      {/* Swipe direction indicator */}
+      {isMobile && gameState === "playing" && swipeDirection && (
+        <div style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          backgroundColor: "rgba(255, 209, 102, 0.6)",
+          borderRadius: "8px",
+          padding: "10px",
+          zIndex: 100,
+          fontSize: "24px",
+          fontWeight: "bold",
+          color: "#d62828",
+          animation: "fadeOut 0.5s forwards",
+          pointerEvents: "none"
+        }}>
+          {swipeDirection === 'up' && '⬆️'}
+          {swipeDirection === 'down' && '⬇️'}
+          {swipeDirection === 'left' && '⬅️'}
+          {swipeDirection === 'right' && '➡️'}
+        </div>
+      )}
+      
       {/* Win message */}
       {gameState === "won" && (
         <div style={{
@@ -532,113 +649,7 @@ const RescueGame: React.FC = () => {
         </div>
       )}
       
-      {/* Touch Controls for Mobile */}
-      {isMobile && gameState === "playing" && (
-        <div style={{
-          position: "fixed",
-          bottom: "70px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gridTemplateRows: "repeat(3, 1fr)",
-          gap: "5px",
-          width: "180px",
-          height: "180px",
-          zIndex: 100
-        }}>
-          {/* Up button */}
-          <div style={{ gridColumn: 2, gridRow: 1 }}>
-            <button
-              onTouchStart={() => handleTouchMove('up')}
-              style={{
-                width: "60px",
-                height: "60px",
-                backgroundColor: "#ffd166",
-                border: "none",
-                borderRadius: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-                cursor: "pointer"
-              }}
-              aria-label="Move Up"
-            >
-              <ArrowUp size={30} color="#d62828" />
-            </button>
-          </div>
-          
-          {/* Left button */}
-          <div style={{ gridColumn: 1, gridRow: 2 }}>
-            <button
-              onTouchStart={() => handleTouchMove('left')}
-              style={{
-                width: "60px",
-                height: "60px",
-                backgroundColor: "#ffd166",
-                border: "none",
-                borderRadius: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-                cursor: "pointer"
-              }}
-              aria-label="Move Left"
-            >
-              <ArrowLeft size={30} color="#d62828" />
-            </button>
-          </div>
-          
-          {/* Center - Empty */}
-          <div style={{ gridColumn: 2, gridRow: 2 }}></div>
-          
-          {/* Right button */}
-          <div style={{ gridColumn: 3, gridRow: 2 }}>
-            <button
-              onTouchStart={() => handleTouchMove('right')}
-              style={{
-                width: "60px",
-                height: "60px",
-                backgroundColor: "#ffd166",
-                border: "none",
-                borderRadius: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-                cursor: "pointer"
-              }}
-              aria-label="Move Right"
-            >
-              <ArrowRight size={30} color="#d62828" />
-            </button>
-          </div>
-          
-          {/* Down button */}
-          <div style={{ gridColumn: 2, gridRow: 3 }}>
-            <button
-              onTouchStart={() => handleTouchMove('down')}
-              style={{
-                width: "60px",
-                height: "60px",
-                backgroundColor: "#ffd166",
-                border: "none",
-                borderRadius: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-                cursor: "pointer"
-              }}
-              aria-label="Move Down"
-            >
-              <ArrowDown size={30} color="#d62828" />
-            </button>
-          </div>
-        </div>
-      )}
+
       
       {/* Game instructions */}
       {(gameState === "ready" || gameState === "playing") && (
@@ -653,7 +664,7 @@ const RescueGame: React.FC = () => {
         }}>
           <p style={{ fontSize: "18px", marginBottom: "8px" }}>
             {isMobile ? 
-              "Use the on-screen buttons to move the fire truck to the fire!" :
+              "Swipe in any direction to move the fire truck to the fire!" :
               "Use arrow keys (or WASD) to move the fire truck to the fire!"}
           </p>
           {gameState === "ready" && <p style={{ fontSize: "18px", margin: 0 }}>Press the Play button to begin.</p>}
@@ -701,6 +712,11 @@ const RescueGame: React.FC = () => {
           @keyframes waddle {
             0%, 100% { transform: rotate(-5deg); }
             50% { transform: rotate(5deg); }
+          }
+          
+          @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
           }
         `}
       </style>
