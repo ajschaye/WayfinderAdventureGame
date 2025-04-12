@@ -160,7 +160,8 @@ const RescueGame: React.FC = () => {
   }, [gameState, playClapping, playSuccess]);
   
   // Calculate cell size to fit grid in the container width
-  const cellSize = Math.floor((window.innerWidth * 0.85 - 40) / gridSize.x); // 40px accounts for padding
+  const maxContainerWidth = Math.min(window.innerWidth * 0.85, 800) - 40; // 40px accounts for padding
+  const cellSize = Math.floor(maxContainerWidth / gridSize.x);
 
   return (
     <div style={{ 
@@ -172,8 +173,10 @@ const RescueGame: React.FC = () => {
       maxWidth: '800px',
       margin: '0 auto',
       padding: '10px',
-      overflow: 'auto',
-      height: '100vh',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      minHeight: '100vh',
+      height: 'auto',
       backgroundColor: '#e63946', // Red background as requested
       position: 'relative'
     }}>
@@ -292,19 +295,21 @@ const RescueGame: React.FC = () => {
       <div style={{
         width: "100%",
         backgroundColor: '#ccc',
-        padding: '10px 10px',
+        padding: '10px',
         borderRadius: '8px',
         marginBottom: '20px',
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        overflow: 'auto'
       }}>
         {/* Game grid */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
           gridTemplateRows: `repeat(${gridSize.y}, ${cellSize}px)`,
-          gap: '2px'
+          gap: '2px',
+          minWidth: 'fit-content'
         }}>
           {/* Generate grid cells */}
           {Array.from({ length: gridSize.y }).map((_, y) =>
