@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <!-- Goose body - made larger and darker -->
+  <ellipse cx="25" cy="30" rx="18" ry="12" fill="#e0e0e0" stroke="#888888" stroke-width="1" />
+  
+  <!-- Goose neck - thicker and more visible -->
+  <path d="M25,25 C28,15 33,10 38,15" fill="#e0e0e0" stroke="#888888" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Goose head - larger -->
+  <circle cx="38" cy="15" r="5" fill="#e0e0e0" stroke="#888888" stroke-width="1" />
+  
+  <!-- Goose beak - larger and brighter -->
+  <path d="M39,13 L48,11 L39,18" fill="#ff7700" stroke="#cc6600" stroke-width="1" />
+  
+  <!-- Goose eye - larger -->
+  <circle cx="40" cy="14" r="1.5" fill="#000000" />
+  
+  <!-- Goose feet - thicker and more visible -->
+  <path d="M18,40 L15,46 L18,46 L21,46" fill="none" stroke="#ff7700" stroke-width="2.5" />
+  <path d="M32,40 L29,46 L32,46 L35,46" fill="none" stroke="#ff7700" stroke-width="2.5" />
+  
+  <!-- Black wing detail -->
+  <path d="M18,30 C22,25 28,25 32,30" fill="none" stroke="#444444" stroke-width="1.5" />
+</svg>

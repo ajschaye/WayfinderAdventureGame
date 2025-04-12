@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <!-- Main obstacle shape -->
+  <rect x="5" y="5" width="40" height="40" fill="#4287f5" rx="5" />
+  
+  <!-- Inner detail -->
+  <rect x="10" y="10" width="30" height="30" fill="#82b1f8" rx="3" />
+  
+  <!-- Warning symbol -->
+  <path d="M25,15 L35,35 L15,35 Z" fill="#FFFF00" />
+  <text x="25" y="30" font-family="Arial" font-size="15" text-anchor="middle" fill="#000000">!</text>
+</svg>

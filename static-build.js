@@ -16,9 +16,42 @@ async function main() {
   console.log('Starting static build process...');
   
   try {
-    // 1. Build the client app
+    // 1. Copy static-index.html to index.html for the build
+    console.log('Setting up static build environment...');
+    
+    // Read the static-index.html file
+    const staticIndexContent = await fs.readFile(path.join(__dirname, 'client', 'static-index.html'), 'utf8');
+    
+    // Backup the original index.html
+    try {
+      await fs.copyFile(
+        path.join(__dirname, 'client', 'index.html'),
+        path.join(__dirname, 'client', 'index.html.bak')
+      );
+      console.log('Backed up original index.html');
+    } catch (err) {
+      console.log('Could not backup index.html:', err.message);
+    }
+    
+    // Replace index.html with static version
+    await fs.writeFile(path.join(__dirname, 'client', 'index.html'), staticIndexContent);
+    console.log('Replaced index.html with static version');
+    
+    // Now build the client app using Vite directly
     console.log('Building the client application...');
-    await execAsync('npm run build');
+    await execAsync('npx vite build');
+    
+    // Restore the original index.html
+    try {
+      await fs.copyFile(
+        path.join(__dirname, 'client', 'index.html.bak'),
+        path.join(__dirname, 'client', 'index.html')
+      );
+      await fs.unlink(path.join(__dirname, 'client', 'index.html.bak'));
+      console.log('Restored original index.html');
+    } catch (err) {
+      console.log('Could not restore index.html:', err.message);
+    }
     
     // 2. Create a static server file that can serve the app in production
     console.log('Creating static server configuration...');
@@ -54,11 +87,12 @@ app.listen(PORT, () => {
     // 3. Copy static assets that might not be handled by Vite
     console.log('Ensuring all static assets are copied...');
     
-    // Make sure the assets directory exists
+    // Make sure the directories exist
     try {
       await fs.mkdir(path.join(__dirname, 'dist', 'public', 'sounds'), { recursive: true });
+      await fs.mkdir(path.join(__dirname, 'dist', 'public', 'assets'), { recursive: true });
     } catch (err) {
-      console.log('Sounds directory already exists');
+      console.log('Directories already exist');
     }
     
     // Copy sound files
@@ -70,6 +104,19 @@ app.listen(PORT, () => {
       const dest = path.join(__dirname, 'dist', 'public', 'sounds', file);
       await fs.copyFile(src, dest);
       console.log(`Copied ${file} to dist/public/sounds/`);
+    }
+    
+    // Copy SVG assets
+    const assetsDir = path.join(__dirname, 'client', 'public', 'assets');
+    const assetFiles = await fs.readdir(assetsDir);
+    
+    for (const file of assetFiles) {
+      if (file.endsWith('.svg')) {
+        const src = path.join(assetsDir, file);
+        const dest = path.join(__dirname, 'dist', 'public', 'assets', file);
+        await fs.copyFile(src, dest);
+        console.log(`Copied ${file} to dist/public/assets/`);
+      }
     }
     
     // 4. Create a manifest or readme for deployment
