@@ -205,16 +205,14 @@ const RescueGame: React.FC = () => {
       
       {/* Game controls panel */}
       <div style={{
-        backgroundColor: "white",
-        borderRadius: "8px",
+        backgroundColor: "#e63946", // Changed from white to match the background
         padding: "15px",
         width: "100%",
         marginBottom: "15px",
         display: "flex",
         flexDirection: "column",
         gap: "10px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        color: "black"
+        color: "white" // Changed text color to white for better contrast
       }}>
         
         {/* Grid size control */}
