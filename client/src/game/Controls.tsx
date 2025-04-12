@@ -195,7 +195,7 @@ const Controls = () => {
       {gameState === "won" && (
         <div
           style={{
-            backgroundColor: "rgba(76, 175, 80, 0.8)",
+            backgroundColor: "rgba(76, 175, 80, 0.9)",
             color: "white",
             padding: "20px",
             borderRadius: "8px",
@@ -207,9 +207,13 @@ const Controls = () => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: 100,
+            boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+            minWidth: "400px",
+            maxWidth: "90%"
           }}
         >
-          Great job! You put out the fire! 🚒
+          Great job! 🎊<br />
+          You put out the fire!
         </div>
       )}
 
