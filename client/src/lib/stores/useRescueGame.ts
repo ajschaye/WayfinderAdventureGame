@@ -140,13 +140,17 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     });
   };
 
+  // Calculate max obstacles based on the initial grid size
+  const initialGridSize = 10;
+  const maxObstacles = Math.floor(initialGridSize * initialGridSize * 0.3);
+
   return {
     // State
-    gridSize: { x: 5, y: 5 },
-    obstacleCount: 0,
+    gridSize: { x: initialGridSize, y: initialGridSize },
+    obstacleCount: maxObstacles, // Start with maximum obstacles
     gameState: "ready" as GameState,
-    fireTruckPosition: { x: 2, y: 4 },  // Default position at bottom center of 5x5 grid
-    firePosition: { x: 2, y: 0 },       // Default position at top center of 5x5 grid (within top third)
+    fireTruckPosition: { x: Math.floor(initialGridSize / 2), y: initialGridSize - 1 },  // Default position at bottom center
+    firePosition: { x: Math.floor(initialGridSize / 2), y: 0 },  // Default position at top center (within top third)
     obstacles: [] as Obstacle[],
     moveCooldown: false,
     
