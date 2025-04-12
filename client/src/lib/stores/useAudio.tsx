@@ -114,17 +114,21 @@ export const useAudio = create<AudioState>((set, get) => ({
         return;
       }
       
-      waterSpraySound.currentTime = 0;
-      waterSpraySound.volume = 0.6;
-      waterSpraySound.play().catch(error => {
+      // Clone the sound to allow playing even if already playing
+      const soundClone = waterSpraySound.cloneNode() as HTMLAudioElement;
+      soundClone.currentTime = 0;
+      soundClone.volume = 0.4; // Slightly lower volume
+      soundClone.play().catch(error => {
         console.log("Water spray sound play prevented:", error);
       });
       
       // Stop after 2 seconds
       setTimeout(() => {
-        waterSpraySound.pause();
-        waterSpraySound.currentTime = 0;
+        soundClone.pause();
+        soundClone.currentTime = 0;
       }, 2000);
+    } else {
+      console.log("Water spray sound not loaded");
     }
   }
 }));
