@@ -85,10 +85,10 @@ const RescueGame: React.FC = () => {
     }
   }, [gameState, backgroundMusic, isMuted]);
 
-  // Calculate cell size based on the grid dimensions
+  // Calculate cell size based on the grid dimensions with dynamic scaling
   const cellSize = Math.min(
-    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.6 / gridSize.x),
-    50
+    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.6 / Math.max(gridSize.x, gridSize.y)),
+    gridSize.x >= 8 ? 40 : 50 // Smaller cells for larger grids
   );
 
   return (
@@ -97,12 +97,12 @@ const RescueGame: React.FC = () => {
       flexDirection: 'column', 
       alignItems: 'center',
       fontFamily: "'Inter', sans-serif",
+      width: '100%',
       maxWidth: '800px',
       margin: '0 auto',
-      padding: '20px',
+      padding: '10px',
       overflow: 'auto',
-      height: '100%',
-      maxHeight: '100vh',
+      height: '100vh',
       backgroundColor: '#e63946' // Red background as requested
     }}>
       {/* Game title */}
@@ -204,7 +204,7 @@ const RescueGame: React.FC = () => {
         {gameState === "playing" ? "Stop" : gameState === "won" ? "Play Again" : "Play"}
       </div>
       
-      {/* Game grid - Keep after controls */}
+      {/* Game grid - Keep after controls with improved visibility */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
@@ -217,6 +217,8 @@ const RescueGame: React.FC = () => {
         marginBottom: '20px',
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         maxWidth: '100%',
+        maxHeight: '70vh',
+        overflowY: 'auto',
         overflowX: 'auto'
       }}>
         {/* Generate grid cells */}
