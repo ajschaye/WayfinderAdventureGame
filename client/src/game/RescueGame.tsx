@@ -237,7 +237,7 @@ const RescueGame: React.FC = () => {
             id="obstacles"
             type="range"
             min="0"
-            max={Math.min(10, Math.floor(gridSizeInput * gridSizeInput / 3))}
+            max={Math.floor(gridSizeInput * gridSizeInput * 0.3)}
             value={obstacleCountInput}
             onChange={(e) => setObstacleCountInput(parseInt(e.target.value))}
             disabled={gameState === "playing"}
