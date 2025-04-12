@@ -54,6 +54,8 @@ const RescueGame: React.FC = () => {
     
     // After spraying animation, allow the truck to move to the fire's position
     setTimeout(() => {
+      console.log("Moving truck to fire position after spraying water");
+      
       // If the truck is to the left of the fire
       if (fireTruckPosition.x < firePosition.x) {
         moveTruck(1, 0);
@@ -73,9 +75,10 @@ const RescueGame: React.FC = () => {
       
       // Check win condition after moving
       setTimeout(() => {
+        console.log("Checking win condition after truck moved to fire");
         checkWinCondition();
         setIsSprayingWater(false);
-      }, 200);
+      }, 300); // Increased timeout to ensure movement completes
     }, 1500); // Spray water for 1.5 seconds before moving
     
     return true;

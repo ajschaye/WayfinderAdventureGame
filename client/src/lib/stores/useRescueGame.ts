@@ -165,7 +165,7 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     
     // Move truck
     moveTruck: (dx: number, dy: number) => {
-      const { gameState, fireTruckPosition, moveCooldown } = get();
+      const { gameState, fireTruckPosition, firePosition, moveCooldown } = get();
       
       if (gameState !== "playing" || moveCooldown) return;
       
@@ -177,7 +177,10 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
       const newX = fireTruckPosition.x + dx;
       const newY = fireTruckPosition.y + dy;
       
-      if (isValidPosition(newX, newY)) {
+      // Check if the new position is the fire (always valid to move to)
+      const isFirePosition = newX === firePosition.x && newY === firePosition.y;
+      
+      if (isFirePosition || isValidPosition(newX, newY)) {
         set({ fireTruckPosition: { x: newX, y: newY } });
       } else {
         // Could play collision sound here if implemented
