@@ -31,7 +31,7 @@ function App() {
       
       // Load clapping sound for winning celebrations
       const clappingSfx = new Audio("/sounds/clapping.mp3");
-      clappingSfx.volume = 0.6;
+      clappingSfx.volume = 0.3; // Lower volume for better experience
       setClappingSound(clappingSfx);
     } catch (error) {
       console.error("Error loading audio:", error);
