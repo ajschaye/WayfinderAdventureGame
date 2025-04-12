@@ -67,7 +67,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.STATIC_PORT || 8080; // Use a different port than the main app
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -79,6 +79,7 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(\`Static server running on port \${PORT}\`);
+  console.log(\`Access the app at: http://localhost:\${PORT}\`);
 });
 `;
     
