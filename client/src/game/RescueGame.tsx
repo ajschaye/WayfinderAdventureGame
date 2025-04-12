@@ -172,13 +172,12 @@ const RescueGame: React.FC = () => {
       width: '100%',
       maxWidth: '800px',
       margin: '0 auto',
-      padding: '10px',
-      paddingTop: '30px', // Added more padding at the top
+      padding: '0 10px 10px 10px', // Removed top padding
       overflowY: 'auto',
       overflowX: 'hidden',
       minHeight: '100vh',
       height: 'auto',
-      backgroundColor: '#e63946', // Red background as requested
+      backgroundColor: '#e63946', // Red background
       position: 'relative'
     }}>
       {/* Confetti effect when player wins */}

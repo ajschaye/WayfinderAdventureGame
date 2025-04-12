@@ -24,7 +24,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: 50px; /* Add significant padding to the top */
+  padding-top: 0; /* Removed padding to the top */
 }
 
 canvas {

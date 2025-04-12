@@ -49,17 +49,17 @@ function App() {
   return (
     <div style={{ 
       width: '100vw', 
-      height: 'auto', // Changed from 100vh to auto
+      height: 'auto',
       minHeight: '100vh',
       position: 'relative', 
-      overflow: 'visible', // Changed from auto to visible
+      overflow: 'visible',
       display: 'flex', 
       justifyContent: 'center', 
-      alignItems: 'flex-start', // Changed to flex-start
-      background: '#e63946', // Red background as requested
+      alignItems: 'flex-start',
+      background: '#e63946', // Red background
       color: 'white',
-      paddingTop: '60px', // Increased padding at the top
-      paddingBottom: '30px' // Added padding at the bottom
+      paddingTop: '0', // Removed padding at the top
+      paddingBottom: '30px'
     }}>
       <Suspense fallback={<div>Loading Rescue Adventure...</div>}>
         <RescueGame />
