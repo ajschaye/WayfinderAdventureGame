@@ -87,8 +87,8 @@ const RescueGame: React.FC = () => {
 
   // Calculate cell size based on the grid dimensions with dynamic scaling
   const cellSize = Math.min(
-    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.6 / Math.max(gridSize.x, gridSize.y)),
-    gridSize.x >= 8 ? 40 : 50 // Smaller cells for larger grids
+    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.7 / Math.max(gridSize.x, gridSize.y)),
+    gridSize.x >= 8 ? 30 : gridSize.x >= 6 ? 35 : 40 // Scale cells based on grid size
   );
 
   return (
@@ -204,7 +204,7 @@ const RescueGame: React.FC = () => {
         {gameState === "playing" ? "Stop" : gameState === "won" ? "Play Again" : "Play"}
       </div>
       
-      {/* Game grid - Keep after controls with improved visibility */}
+      {/* Game grid - Keep after controls with larger container */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
@@ -216,10 +216,7 @@ const RescueGame: React.FC = () => {
         position: 'relative',
         marginBottom: '20px',
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        maxWidth: '100%',
-        maxHeight: '70vh',
-        overflowY: 'auto',
-        overflowX: 'auto'
+        maxWidth: '100%'
       }}>
         {/* Generate grid cells */}
         {Array.from({ length: gridSize.y }).map((_, y) =>
