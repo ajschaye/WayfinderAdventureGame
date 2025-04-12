@@ -183,15 +183,23 @@ const RescueGame: React.FC = () => {
       {/* Confetti effect when player wins */}
       <Confetti active={gameState === "won"} duration={5000} />
       {/* Game title */}
-      <h1 style={{
+      <div className="game-title" style={{
+        display: "block",
+        width: "100%",
+        padding: "15px 0",
+        margin: "0 0 20px 0",
+        backgroundColor: "#ffd166",
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
         textAlign: "center",
-        marginBottom: "20px",
-        color: "black",
+        color: "#d62828",
         fontWeight: "bold",
-        fontSize: "36px",
+        fontSize: "40px",
+        position: "relative",
+        zIndex: 10
       }}>
-        🚒 Rescue Adventure 🚒
-      </h1>
+        🚒 Fire Rescue Adventure 🚒
+      </div>
       
       {/* Game controls panel */}
       <div style={{
