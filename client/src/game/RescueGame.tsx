@@ -85,11 +85,8 @@ const RescueGame: React.FC = () => {
     }
   }, [gameState, backgroundMusic, isMuted]);
 
-  // Calculate cell size based on the grid dimensions with dynamic scaling
-  const cellSize = Math.min(
-    Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.7 / Math.max(gridSize.x, gridSize.y)),
-    gridSize.x >= 8 ? 30 : gridSize.x >= 6 ? 35 : 40 // Scale cells based on grid size
-  );
+  // Calculate cell size to fit grid in the container width
+  const cellSize = Math.floor((window.innerWidth * 0.85 - 40) / gridSize.x); // 40px accounts for padding
 
   return (
     <div style={{ 
@@ -116,7 +113,7 @@ const RescueGame: React.FC = () => {
         {gameState === "won" ? "You Win! 🎉" : "🚒 Rescue Adventure 🚒"}
       </div>
       
-      {/* Game controls - Moved under title as requested */}
+      {/* Game controls panel */}
       <div style={{
         backgroundColor: "white",
         borderRadius: "8px",
@@ -181,7 +178,7 @@ const RescueGame: React.FC = () => {
         </div>
       </div>
       
-      {/* Play/stop button - Changed label as requested */}
+      {/* Play/stop button */}
       <div style={{
         backgroundColor: "#77c3f9",
         borderRadius: "50px",
@@ -204,85 +201,90 @@ const RescueGame: React.FC = () => {
         {gameState === "playing" ? "Stop" : gameState === "won" ? "Play Again" : "Play"}
       </div>
       
-      {/* Game grid - Keep after controls with larger container */}
+      {/* Game grid container */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
-        gridTemplateRows: `repeat(${gridSize.y}, ${cellSize}px)`,
-        gap: '2px',
+        width: "100%",
         backgroundColor: '#ccc',
         padding: '10px',
         borderRadius: '8px',
-        position: 'relative',
         marginBottom: '20px',
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        maxWidth: '100%'
+        display: 'flex',
+        justifyContent: 'center'
       }}>
-        {/* Generate grid cells */}
-        {Array.from({ length: gridSize.y }).map((_, y) =>
-          Array.from({ length: gridSize.x }).map((_, x) => {
-            // Determine cell content
-            const isFireTruck = x === fireTruckPosition.x && y === fireTruckPosition.y;
-            const isFire = x === firePosition.x && y === firePosition.y;
-            const isObstacle = obstacles.some(obs => obs.x === x && obs.y === y);
-            
-            // Set cell content and style
-            let cellContent = null;
-            let cellStyle: React.CSSProperties = {
-              width: `${cellSize}px`,
-              height: `${cellSize}px`,
-              backgroundColor: '#eee',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '4px'
-            };
+        {/* Game grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${gridSize.x}, ${cellSize}px)`,
+          gridTemplateRows: `repeat(${gridSize.y}, ${cellSize}px)`,
+          gap: '2px'
+        }}>
+          {/* Generate grid cells */}
+          {Array.from({ length: gridSize.y }).map((_, y) =>
+            Array.from({ length: gridSize.x }).map((_, x) => {
+              // Determine cell content
+              const isFireTruck = x === fireTruckPosition.x && y === fireTruckPosition.y;
+              const isFire = x === firePosition.x && y === firePosition.y;
+              const isObstacle = obstacles.some(obs => obs.x === x && obs.y === y);
+              
+              // Set cell content and style
+              let cellContent = null;
+              let cellStyle: React.CSSProperties = {
+                width: `${cellSize}px`,
+                height: `${cellSize}px`,
+                backgroundColor: '#eee',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '4px'
+              };
 
-            if (isFireTruck) {
-              cellContent = (
-                <img 
-                  src={fireTruckSvg} 
-                  alt="Fire Truck" 
-                  style={{ 
-                    width: '85%', 
-                    height: '85%',
-                    animation: gameState === 'won' ? 'spin 1s linear infinite' : 'bob 1s ease-in-out infinite'
-                  }} 
-                />
-              );
-            } else if (isFire) {
-              cellContent = (
-                <img 
-                  src={fireSvg} 
-                  alt="Fire" 
-                  style={{ 
-                    width: '85%', 
-                    height: '85%',
-                    animation: gameState === 'won' ? 'shrink 1s linear forwards' : 'flicker 0.5s ease-in-out infinite'
-                  }} 
-                />
-              );
-            } else if (isObstacle) {
-              cellContent = (
-                <img 
-                  src={obstacleSvg} 
-                  alt="Obstacle" 
-                  style={{ 
-                    width: '85%', 
-                    height: '85%',
-                    animation: gameState === 'playing' ? 'pulse 2s ease-in-out infinite' : 'none'
-                  }} 
-                />
-              );
-            }
+              if (isFireTruck) {
+                cellContent = (
+                  <img 
+                    src={fireTruckSvg} 
+                    alt="Fire Truck" 
+                    style={{ 
+                      width: '85%', 
+                      height: '85%',
+                      animation: gameState === 'won' ? 'spin 1s linear infinite' : 'bob 1s ease-in-out infinite'
+                    }} 
+                  />
+                );
+              } else if (isFire) {
+                cellContent = (
+                  <img 
+                    src={fireSvg} 
+                    alt="Fire" 
+                    style={{ 
+                      width: '85%', 
+                      height: '85%',
+                      animation: gameState === 'won' ? 'shrink 1s linear forwards' : 'flicker 0.5s ease-in-out infinite'
+                    }} 
+                  />
+                );
+              } else if (isObstacle) {
+                cellContent = (
+                  <img 
+                    src={obstacleSvg} 
+                    alt="Obstacle" 
+                    style={{ 
+                      width: '85%', 
+                      height: '85%',
+                      animation: gameState === 'playing' ? 'pulse 2s ease-in-out infinite' : 'none'
+                    }} 
+                  />
+                );
+              }
 
-            return (
-              <div key={`${x}-${y}`} style={cellStyle}>
-                {cellContent}
-              </div>
-            );
-          })
-        )}
+              return (
+                <div key={`${x}-${y}`} style={cellStyle}>
+                  {cellContent}
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
       
       {/* Win message */}
@@ -306,7 +308,7 @@ const RescueGame: React.FC = () => {
         </div>
       )}
       
-      {/* Game instructions - shown in ready and playing state */}
+      {/* Game instructions */}
       {(gameState === "ready" || gameState === "playing") && (
         <div style={{
           maxWidth: "400px",
