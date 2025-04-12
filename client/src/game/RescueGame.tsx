@@ -339,6 +339,9 @@ const RescueGame: React.FC = () => {
               };
 
               if (isFireTruck) {
+                // Set background color to black for fire truck cell
+                cellStyle.backgroundColor = '#000';
+                
                 // Determine if water spray should be shown from this fire truck
                 const showWaterSpray = isSprayingWater && isNextToFire;
                 
