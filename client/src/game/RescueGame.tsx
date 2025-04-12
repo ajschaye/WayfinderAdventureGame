@@ -173,6 +173,7 @@ const RescueGame: React.FC = () => {
       maxWidth: '800px',
       margin: '0 auto',
       padding: '10px',
+      paddingTop: '30px', // Added more padding at the top
       overflowY: 'auto',
       overflowX: 'hidden',
       minHeight: '100vh',

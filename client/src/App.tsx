@@ -53,10 +53,11 @@ function App() {
       position: 'relative', 
       overflow: 'auto', 
       display: 'flex', 
-      justifyContent: 'center', 
+      justifyContent: 'flex-start', // Changed from center to flex-start
       alignItems: 'center', 
       background: '#e63946', // Red background as requested
-      color: 'white'
+      color: 'white',
+      paddingTop: '20px' // Added padding at the top
     }}>
       <Suspense fallback={<div>Loading Rescue Adventure...</div>}>
         <RescueGame />
