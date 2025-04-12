@@ -6,6 +6,7 @@ import { Confetti } from '../components/game/Confetti';
 import fireTruckSvg from './assets/fire-truck.svg';
 import fireSvg from './assets/fire.svg';
 import obstacleSvg from './assets/obstacle.svg';
+import waterSpraySvg from './assets/water-spray.svg';
 
 const RescueGame: React.FC = () => {
   const {
@@ -24,16 +25,75 @@ const RescueGame: React.FC = () => {
     setObstacleCount
   } = useRescueGame();
 
-  const { toggleMute, isMuted, playHit, playSuccess, playClapping, backgroundMusic } = useAudio();
+  const { toggleMute, isMuted, playHit, playSuccess, playClapping, playWaterSpray, backgroundMusic } = useAudio();
 
   // Local state for input values
   const [gridSizeInput, setGridSizeInput] = useState(gridSize.x);
   const [obstacleCountInput, setObstacleCountInput] = useState(obstacleCount);
+  
+  // State to track if the water spray effect is active
+  const [isSprayingWater, setIsSprayingWater] = useState(false);
+  
+  // Calculate if the truck is next to the fire (but not on it)
+  const isNextToFire = 
+    (Math.abs(fireTruckPosition.x - firePosition.x) === 1 && fireTruckPosition.y === firePosition.y) || 
+    (Math.abs(fireTruckPosition.y - firePosition.y) === 1 && fireTruckPosition.x === firePosition.x);
+
+  // Function to handle water spraying when truck is next to fire
+  const handleFireExtinguishing = useCallback(() => {
+    if (!isNextToFire || isSprayingWater) return false;
+    
+    // Start spraying water
+    setIsSprayingWater(true);
+    playWaterSpray();
+    
+    // After spraying animation, allow the truck to move to the fire's position
+    setTimeout(() => {
+      // If the truck is to the left of the fire
+      if (fireTruckPosition.x < firePosition.x) {
+        moveTruck(1, 0);
+      }
+      // If the truck is to the right of the fire
+      else if (fireTruckPosition.x > firePosition.x) {
+        moveTruck(-1, 0);
+      }
+      // If the truck is above the fire
+      else if (fireTruckPosition.y < firePosition.y) {
+        moveTruck(0, 1);
+      }
+      // If the truck is below the fire
+      else if (fireTruckPosition.y > firePosition.y) {
+        moveTruck(0, -1);
+      }
+      
+      // Check win condition after moving
+      setTimeout(() => {
+        checkWinCondition();
+        setIsSprayingWater(false);
+      }, 200);
+    }, 1500); // Spray water for 1.5 seconds before moving
+    
+    return true;
+  }, [isNextToFire, isSprayingWater, firePosition, fireTruckPosition, moveTruck, playWaterSpray, checkWinCondition]);
 
   // Handle keyboard input
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (gameState !== 'playing') return;
+    if (gameState !== 'playing' || isSprayingWater) return;
 
+    // If next to fire and the key would move towards the fire, start spraying
+    if (isNextToFire) {
+      const wouldMoveToFire = 
+        (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') && fireTruckPosition.x < firePosition.x ||
+        (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && fireTruckPosition.x > firePosition.x ||
+        (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && fireTruckPosition.y < firePosition.y ||
+        (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && fireTruckPosition.y > firePosition.y;
+      
+      if (wouldMoveToFire && handleFireExtinguishing()) {
+        return;
+      }
+    }
+
+    // Normal movement
     switch (e.key) {
       case 'ArrowUp':
       case 'w':
@@ -58,10 +118,7 @@ const RescueGame: React.FC = () => {
       default:
         return;
     }
-
-    // Check if the truck has reached the fire
-    checkWinCondition();
-  }, [gameState, moveTruck, checkWinCondition]);
+  }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
 
   // Add and remove event listeners
   useEffect(() => {
