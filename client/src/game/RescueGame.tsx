@@ -205,7 +205,7 @@ const RescueGame: React.FC = () => {
       <div style={{
         width: "100%",
         backgroundColor: '#ccc',
-        padding: '10px',
+        padding: '10px 10px',
         borderRadius: '8px',
         marginBottom: '20px',
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
