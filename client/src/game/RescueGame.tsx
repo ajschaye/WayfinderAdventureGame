@@ -113,7 +113,7 @@ const RescueGame: React.FC = () => {
         width: "100%",
         textAlign: "center",
         marginBottom: "20px",
-        color: "white",
+        color: "black",
         fontWeight: "bold",
         fontSize: "24px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
@@ -131,9 +131,10 @@ const RescueGame: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         gap: "10px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+        color: "black"
       }}>
-        <h2 style={{ margin: "0 0 10px 0", textAlign: "center" }}>Controls</h2>
+        <h2 style={{ margin: "0 0 10px 0", textAlign: "center", color: "black" }}>Controls</h2>
         
         {/* Grid size control */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
