@@ -86,6 +86,11 @@ const RescueGame: React.FC = () => {
 
   // Handle keyboard input
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Prevent arrow keys from scrolling the window
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'].includes(e.key)) {
+      e.preventDefault();
+    }
+    
     if (gameState !== 'playing' || isSprayingWater) return;
 
     // If next to fire and the key would move towards the fire, start spraying
@@ -176,7 +181,7 @@ const RescueGame: React.FC = () => {
       maxWidth: '800px',
       margin: '0 auto',
       padding: '0 10px 10px 10px', // Removed top padding
-      overflowY: 'auto',
+      overflowY: 'hidden', // Prevent vertical scrolling when using arrow keys
       overflowX: 'hidden',
       minHeight: '100vh',
       height: 'auto',
@@ -311,7 +316,7 @@ const RescueGame: React.FC = () => {
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         display: 'flex',
         justifyContent: 'center',
-        overflow: 'auto'
+        overflow: 'visible'
       }}>
         {/* Game grid */}
         <div style={{
