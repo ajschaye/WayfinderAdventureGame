@@ -313,11 +313,7 @@ const RescueGame: React.FC = () => {
           maxWidth: "400px",
           textAlign: "center",
           color: "black",
-          marginTop: "20px",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-          padding: "10px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+          marginTop: "20px"
         }}>
           <p>Use arrow keys (or WASD) to move the fire truck to the fire!</p>
           {gameState === "ready" && <p>Press the Play button to begin.</p>}
