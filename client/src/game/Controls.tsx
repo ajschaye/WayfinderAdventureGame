@@ -165,13 +165,14 @@ const Controls = () => {
       {/* Start/stop button */}
       <div
         style={{
-          backgroundColor: "#77c3f9",
+          backgroundColor: "#ffd166",
           borderRadius: "50px",
           padding: "10px 30px",
           pointerEvents: "auto",
           cursor: "pointer",
           fontWeight: "bold",
           marginBottom: "20px",
+          color: "#d62828",
         }}
         onClick={() => {
           if (gameState === "playing") {

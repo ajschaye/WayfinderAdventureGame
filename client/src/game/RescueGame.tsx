@@ -277,14 +277,14 @@ const RescueGame: React.FC = () => {
       
       {/* Play/stop button */}
       <div style={{
-        backgroundColor: "#77c3f9",
+        backgroundColor: "#ffd166",
         borderRadius: "50px",
         padding: "10px 30px",
         cursor: "pointer",
         fontWeight: "bold",
         marginBottom: "20px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        color: "black"
+        color: "#d62828"
       }}
       onClick={() => {
         if (gameState === "playing") {
