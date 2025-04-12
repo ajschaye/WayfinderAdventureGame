@@ -125,7 +125,7 @@ const RescueGame: React.FC = () => {
         fontWeight: "bold",
         fontSize: "36px",
       }}>
-        {gameState === "won" ? "You Win! 🎉" : "🚒 Rescue Adventure 🚒"}
+        🚒 Rescue Adventure 🚒
       </div>
       
       {/* Game controls panel */}

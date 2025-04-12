@@ -71,7 +71,7 @@ const Controls = () => {
           fontSize: "24px",
         }}
       >
-        {gameState === "won" ? "You Win! 🎉" : "Rescue Adventure"}
+        Rescue Adventure
       </div>
 
       {/* Controls container */}
