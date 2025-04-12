@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRescueGame } from '../lib/stores/useRescueGame';
+import { useRescueGame, ObstacleType } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Confetti } from '../components/game/Confetti';
 import fireTruckSvg from './assets/fire-truck.svg';
 import fireSvg from './assets/fire.svg';
 import obstacleSvg from './assets/obstacle.svg';
+import puddleSvg from './assets/puddle.svg';
+import fallenTreeSvg from './assets/fallen-tree.svg';
+import trafficConeSvg from './assets/traffic-cone.svg';
+import bouncingBallSvg from './assets/bouncing-ball.svg';
+import gooseSvg from './assets/goose.svg';
 import waterSpraySvg from './assets/water-spray.svg';
 
 const RescueGame: React.FC = () => {
@@ -388,14 +393,37 @@ const RescueGame: React.FC = () => {
                   />
                 );
               } else if (isObstacle) {
+                // Find the obstacle type
+                const obstacle = obstacles.find(obs => obs.x === x && obs.y === y);
+                
+                // Get the correct SVG based on the obstacle type
+                const getObstacleSvg = (type: ObstacleType) => {
+                  switch (type) {
+                    case 'puddle':
+                      return { src: puddleSvg, alt: "Water Puddle", animation: "pulse 3s ease-in-out infinite" };
+                    case 'fallen-tree':
+                      return { src: fallenTreeSvg, alt: "Fallen Tree", animation: "none" };
+                    case 'traffic-cone':
+                      return { src: trafficConeSvg, alt: "Traffic Cone", animation: "pulse 2s ease-in-out infinite" };
+                    case 'bouncing-ball':
+                      return { src: bouncingBallSvg, alt: "Bouncing Ball", animation: "bounce 0.5s alternate infinite" };
+                    case 'goose':
+                      return { src: gooseSvg, alt: "Goose", animation: "waddle 1s ease-in-out infinite" };
+                    default:
+                      return { src: obstacleSvg, alt: "Obstacle", animation: "pulse 2s ease-in-out infinite" };
+                  }
+                };
+                
+                const { src, alt, animation } = getObstacleSvg(obstacle?.type || 'puddle');
+                
                 cellContent = (
                   <img 
-                    src={obstacleSvg} 
-                    alt="Obstacle" 
+                    src={src} 
+                    alt={alt} 
                     style={{ 
                       width: '85%', 
                       height: '85%',
-                      animation: gameState === 'playing' ? 'pulse 2s ease-in-out infinite' : 'none'
+                      animation: gameState === 'playing' ? animation : 'none'
                     }} 
                   />
                 );
@@ -476,6 +504,16 @@ const RescueGame: React.FC = () => {
           @keyframes spray {
             0% { transform: scaleX(0.9) scaleY(0.9); opacity: 0.7; }
             100% { transform: scaleX(1.1) scaleY(1.1); opacity: 1; }
+          }
+          
+          @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+          }
+          
+          @keyframes waddle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
           }
         `}
       </style>
