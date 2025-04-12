@@ -142,7 +142,15 @@ const RescueGame: React.FC = () => {
   // Update game settings when inputs change
   useEffect(() => {
     setGridSize(gridSizeInput, gridSizeInput);
-  }, [gridSizeInput, setGridSize]);
+    
+    // Calculate max obstacles for new grid size
+    const maxObstacles = Math.floor(gridSizeInput * gridSizeInput * 0.3);
+    
+    // If current obstacle count exceeds the new maximum, adjust it down
+    if (obstacleCountInput > maxObstacles) {
+      setObstacleCountInput(maxObstacles);
+    }
+  }, [gridSizeInput, setGridSize, obstacleCountInput]);
   
   useEffect(() => {
     setObstacleCount(obstacleCountInput);
