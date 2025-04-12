@@ -307,16 +307,20 @@ const RescueGame: React.FC = () => {
         </div>
       )}
       
-      {/* Game instructions when ready */}
-      {gameState === "ready" && (
+      {/* Game instructions - shown in ready and playing state */}
+      {(gameState === "ready" || gameState === "playing") && (
         <div style={{
           maxWidth: "400px",
           textAlign: "center",
           color: "black",
-          marginTop: "20px"
+          marginTop: "20px",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          padding: "10px",
+          borderRadius: "8px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
         }}>
           <p>Use arrow keys (or WASD) to move the fire truck to the fire!</p>
-          <p>Press the Play button to begin.</p>
+          {gameState === "ready" && <p>Press the Play button to begin.</p>}
         </div>
       )}
 
