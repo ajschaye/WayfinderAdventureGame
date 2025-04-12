@@ -247,10 +247,10 @@ const RescueGame: React.FC = () => {
         </div>
       </div>
       
-      {/* Sound toggle button in upper right corner */}
+      {/* Sound toggle button in lower right corner */}
       <div style={{
         position: "fixed",
-        top: "20px",
+        bottom: "20px",
         right: "20px",
         zIndex: 100
       }}>
