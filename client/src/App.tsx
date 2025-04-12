@@ -7,7 +7,7 @@ const RescueGame = lazy(() => import("./game/RescueGame"));
 
 // Main App component
 function App() {
-  const { setBackgroundMusic, setHitSound, setSuccessSound } = useAudio();
+  const { setBackgroundMusic, setHitSound, setSuccessSound, setClappingSound } = useAudio();
   const [loaded, setLoaded] = useState(false);
 
   // Load audio assets
@@ -28,13 +28,18 @@ function App() {
       const successSfx = new Audio("/sounds/success.mp3");
       successSfx.volume = 0.7;
       setSuccessSound(successSfx);
+      
+      // Load clapping sound for winning celebrations
+      const clappingSfx = new Audio("/sounds/clapping.mp3");
+      clappingSfx.volume = 0.6;
+      setClappingSound(clappingSfx);
     } catch (error) {
       console.error("Error loading audio:", error);
     }
     
     // Mark assets as loaded
     setLoaded(true);
-  }, [setBackgroundMusic, setHitSound, setSuccessSound]);
+  }, [setBackgroundMusic, setHitSound, setSuccessSound, setClappingSound]);
 
   return (
     <div style={{ 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRescueGame } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
 import { Volume2, VolumeX } from 'lucide-react';
+import { Confetti } from '../components/game/Confetti';
 import fireTruckSvg from './assets/fire-truck.svg';
 import fireSvg from './assets/fire.svg';
 import obstacleSvg from './assets/obstacle.svg';
@@ -23,7 +24,7 @@ const RescueGame: React.FC = () => {
     setObstacleCount
   } = useRescueGame();
 
-  const { toggleMute, isMuted, playHit, playSuccess, backgroundMusic } = useAudio();
+  const { toggleMute, isMuted, playHit, playSuccess, playClapping, backgroundMusic } = useAudio();
 
   // Local state for input values
   const [gridSizeInput, setGridSizeInput] = useState(gridSize.x);
@@ -86,6 +87,16 @@ const RescueGame: React.FC = () => {
     }
   }, [gameState, backgroundMusic, isMuted]);
 
+  // Handle winning effects (confetti and clapping sound)
+  useEffect(() => {
+    if (gameState === "won") {
+      // Play clapping sound when the player wins
+      playClapping();
+      // Play success sound as well
+      playSuccess();
+    }
+  }, [gameState, playClapping, playSuccess]);
+  
   // Calculate cell size to fit grid in the container width
   const cellSize = Math.floor((window.innerWidth * 0.85 - 40) / gridSize.x); // 40px accounts for padding
 
@@ -101,8 +112,11 @@ const RescueGame: React.FC = () => {
       padding: '10px',
       overflow: 'auto',
       height: '100vh',
-      backgroundColor: '#e63946' // Red background as requested
+      backgroundColor: '#e63946', // Red background as requested
+      position: 'relative'
     }}>
+      {/* Confetti effect when player wins */}
+      <Confetti active={gameState === "won"} duration={5000} />
       {/* Game title */}
       <div style={{
         textAlign: "center",
