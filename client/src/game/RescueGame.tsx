@@ -322,16 +322,56 @@ const RescueGame: React.FC = () => {
               };
 
               if (isFireTruck) {
+                // Determine if water spray should be shown from this fire truck
+                const showWaterSpray = isSprayingWater && isNextToFire;
+                
+                // Calculate direction from fire truck to fire
+                let sprayDirection = "0deg";
+                if (showWaterSpray) {
+                  if (fireTruckPosition.x < firePosition.x) sprayDirection = "0deg"; // Spray right
+                  else if (fireTruckPosition.x > firePosition.x) sprayDirection = "180deg"; // Spray left
+                  else if (fireTruckPosition.y < firePosition.y) sprayDirection = "90deg"; // Spray down
+                  else if (fireTruckPosition.y > firePosition.y) sprayDirection = "270deg"; // Spray up
+                }
+                
                 cellContent = (
-                  <img 
-                    src={fireTruckSvg} 
-                    alt="Fire Truck" 
-                    style={{ 
-                      width: '85%', 
-                      height: '85%',
-                      animation: gameState === 'won' ? 'spin 1s linear infinite' : 'bob 1s ease-in-out infinite'
-                    }} 
-                  />
+                  <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <img 
+                      src={fireTruckSvg} 
+                      alt="Fire Truck" 
+                      style={{ 
+                        width: '85%', 
+                        height: '85%',
+                        animation: gameState === 'won' ? 'spin 1s linear infinite' : 'bob 1s ease-in-out infinite',
+                        zIndex: 1
+                      }} 
+                    />
+                    
+                    {/* Water spray */}
+                    {showWaterSpray && (
+                      <div style={{ 
+                        position: 'absolute', 
+                        transform: `rotate(${sprayDirection})`, 
+                        width: '150%', 
+                        height: '150%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 10,
+                        pointerEvents: 'none'
+                      }}>
+                        <img 
+                          src={waterSpraySvg} 
+                          alt="Water Spray" 
+                          style={{ 
+                            width: '100%', 
+                            height: '100%',
+                            animation: 'spray 0.5s ease-in-out infinite alternate'
+                          }} 
+                        />
+                      </div>
+                    )}
+                  </div>
                 );
               } else if (isFire) {
                 cellContent = (
@@ -341,7 +381,9 @@ const RescueGame: React.FC = () => {
                     style={{ 
                       width: '85%', 
                       height: '85%',
-                      animation: gameState === 'won' ? 'shrink 1s linear forwards' : 'flicker 0.5s ease-in-out infinite'
+                      animation: gameState === 'won' ? 'shrink 1s linear forwards' : 
+                                isSprayingWater && isNextToFire ? 'flicker 0.2s ease-in-out infinite' : 
+                                'flicker 0.5s ease-in-out infinite'
                     }} 
                   />
                 );
@@ -429,6 +471,11 @@ const RescueGame: React.FC = () => {
           @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(0.95); }
+          }
+          
+          @keyframes spray {
+            0% { transform: scaleX(0.9) scaleY(0.9); opacity: 0.7; }
+            100% { transform: scaleX(1.1) scaleY(1.1); opacity: 1; }
           }
         `}
       </style>
