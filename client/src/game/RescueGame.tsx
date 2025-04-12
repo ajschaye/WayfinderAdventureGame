@@ -187,7 +187,7 @@ const RescueGame: React.FC = () => {
       <div className="game-title" style={{
         display: "block",
         width: "100%",
-        padding: "15px 0",
+        padding: "15px 5px",
         margin: "0 0 20px 0",
         backgroundColor: "#ffd166",
         borderRadius: "8px",
@@ -195,8 +195,9 @@ const RescueGame: React.FC = () => {
         textAlign: "center",
         color: "#d62828",
         fontWeight: "bold",
-        fontSize: "40px",
-        position: "relative",
+        fontSize: "32px", // Reduced font size for better fit
+        position: "sticky",
+        top: 0,
         zIndex: 10
       }}>
         🚒 Fire Rescue Adventure 🚒
