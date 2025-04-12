@@ -6,6 +6,16 @@ interface Position {
   y: number;
 }
 
+// Obstacle types
+export type ObstacleType = "puddle" | "fallen-tree" | "traffic-cone" | "bouncing-ball" | "goose";
+
+// Obstacle with position and type
+export interface Obstacle {
+  x: number;
+  y: number;
+  type: ObstacleType;
+}
+
 // Game states
 type GameState = "ready" | "playing" | "stopped" | "won";
 
@@ -17,7 +27,7 @@ interface RescueGameState {
   gameState: GameState;
   fireTruckPosition: Position;
   firePosition: Position;
-  obstacles: Position[];
+  obstacles: Obstacle[];
   moveCooldown: boolean;
   
   // Actions
@@ -29,6 +39,7 @@ interface RescueGameState {
   stopGame: () => void;
   resetGame: () => void;
   getRandomPosition: () => Position;
+  getRandomObstacleType: () => ObstacleType;
 }
 
 // Create the store

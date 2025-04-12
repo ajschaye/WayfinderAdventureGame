@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <!-- Base puddle shape -->
+  <ellipse cx="25" cy="30" rx="22" ry="14" fill="#add8e6" stroke="#80b0c4" stroke-width="2" />
+  
+  <!-- Puddle ripples -->
+  <ellipse cx="25" cy="30" rx="17" ry="10" fill="#c4e8f5" stroke="#80b0c4" stroke-width="1" />
+  <ellipse cx="25" cy="30" rx="12" ry="7" fill="#d4f0fd" stroke="#80b0c4" stroke-width="1" />
+  
+  <!-- Splashes -->
+  <path d="M15,24 L13,20 L16,21 Z" fill="#ffffff" />
+  <path d="M35,24 L37,19 L33,21 Z" fill="#ffffff" />
+  <path d="M23,24 L21,18 L25,20 Z" fill="#ffffff" />
+</svg>
