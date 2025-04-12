@@ -218,19 +218,20 @@ const Controls = () => {
       )}
 
       {/* Game instructions when ready */}
-      {/* Game instructions when ready */}
       {gameState === "ready" && (
         <div style={{
           backgroundColor: "rgba(255, 255, 255, 0.8)",
           padding: "15px",
           borderRadius: "8px",
-          maxWidth: "400px",
+          width: "100%", 
+          maxWidth: "600px",
           marginTop: "20px",
           textAlign: "center",
-          color: "black" 
+          color: "black",
+          boxSizing: "border-box"
         }}>
-          Use arrow keys (or WASD) to move the fire truck to the fire!
-          Press the Play button to begin.
+          <p style={{ fontSize: "18px", marginBottom: "8px" }}>Use arrow keys (or WASD) to move the fire truck to the fire!</p>
+          <p style={{ fontSize: "18px", margin: 0 }}>Press the Play button to begin.</p>
         </div>
       )}
     </div>
