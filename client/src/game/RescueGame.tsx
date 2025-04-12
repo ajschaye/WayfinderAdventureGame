@@ -107,18 +107,13 @@ const RescueGame: React.FC = () => {
     }}>
       {/* Game title */}
       <div style={{
-        backgroundColor: "#e86349",
-        borderRadius: "8px",
-        padding: "20px",
-        width: "100%",
         textAlign: "center",
         marginBottom: "20px",
         color: "black",
         fontWeight: "bold",
-        fontSize: "24px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+        fontSize: "36px",
       }}>
-        {gameState === "won" ? "You Win! 🎉" : "Rescue Adventure"}
+        {gameState === "won" ? "You Win! 🎉" : "🚒 Rescue Adventure 🚒"}
       </div>
       
       {/* Game controls - Moved under title as requested */}
