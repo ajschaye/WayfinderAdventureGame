@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRescueGame } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
+import { Volume2, VolumeX } from 'lucide-react';
 import fireTruckSvg from './assets/fire-truck.svg';
 import fireSvg from './assets/fire.svg';
 import obstacleSvg from './assets/obstacle.svg';
@@ -158,24 +159,34 @@ const RescueGame: React.FC = () => {
           />
           <span>{obstacleCountInput}</span>
         </div>
-        
-        {/* Sound toggle */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <label htmlFor="sound">Sound:</label>
-          <button
-            onClick={toggleMute}
-            style={{
-              backgroundColor: isMuted ? "#e0e0e0" : "#4CAF50",
-              border: "none",
-              color: isMuted ? "black" : "white",
-              padding: "5px 10px",
-              borderRadius: "4px",
-              cursor: "pointer"
-            }}
-          >
-            {isMuted ? "Turn On" : "Turn Off"}
-          </button>
-        </div>
+      </div>
+      
+      {/* Sound toggle button in upper right corner */}
+      <div style={{
+        position: "fixed",
+        top: "20px",
+        right: "20px",
+        zIndex: 100
+      }}>
+        <button
+          onClick={toggleMute}
+          style={{
+            backgroundColor: "white",
+            border: "none",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+          }}
+          aria-label={isMuted ? "Unmute" : "Mute"}
+          title={isMuted ? "Unmute" : "Mute"}
+        >
+          {isMuted ? <VolumeX size={24} color="#e63946" /> : <Volume2 size={24} color="#4CAF50" />}
+        </button>
       </div>
       
       {/* Play/stop button */}
