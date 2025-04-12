@@ -134,7 +134,6 @@ const RescueGame: React.FC = () => {
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
         color: "black"
       }}>
-        <h2 style={{ margin: "0 0 10px 0", textAlign: "center", color: "black" }}>Controls</h2>
         
         {/* Grid size control */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -187,7 +186,7 @@ const RescueGame: React.FC = () => {
         </div>
       </div>
       
-      {/* Start/stop button - Changed label as requested */}
+      {/* Play/stop button - Changed label as requested */}
       <div style={{
         backgroundColor: "#77c3f9",
         borderRadius: "50px",
@@ -196,7 +195,7 @@ const RescueGame: React.FC = () => {
         fontWeight: "bold",
         marginBottom: "20px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        color: "white"
+        color: "black"
       }}
       onClick={() => {
         if (gameState === "playing") {
