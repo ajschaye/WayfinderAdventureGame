@@ -1,5 +1,8 @@
 import { create } from "zustand";
 
+// Game configuration constants
+export const MAX_OBSTACLE_PERCENTAGE = 0.5; // 50% of grid squares can be obstacles
+
 // Types for positions
 interface Position {
   x: number;
@@ -216,7 +219,7 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
 
   // Calculate max obstacles based on the initial grid size
   const initialGridSize = 10;
-  const maxObstacles = Math.floor(initialGridSize * initialGridSize * 0.5);
+  const maxObstacles = Math.floor(initialGridSize * initialGridSize * MAX_OBSTACLE_PERCENTAGE);
 
   return {
     // State

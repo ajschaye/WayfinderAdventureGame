@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useRescueGame, ObstacleType } from '../lib/stores/useRescueGame';
+import { useRescueGame, ObstacleType, MAX_OBSTACLE_PERCENTAGE } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Confetti } from '../components/game/Confetti';
@@ -271,7 +271,7 @@ const RescueGame: React.FC = () => {
     setGridSize(gridSizeInput, gridSizeInput);
     
     // Calculate max obstacles for new grid size
-    const maxObstacles = Math.floor(gridSizeInput * gridSizeInput * 0.5);
+    const maxObstacles = Math.floor(gridSizeInput * gridSizeInput * MAX_OBSTACLE_PERCENTAGE);
     
     // If current obstacle count exceeds the new maximum, adjust it down
     if (obstacleCountInput > maxObstacles) {
@@ -380,7 +380,7 @@ const RescueGame: React.FC = () => {
             id="obstacles"
             type="range"
             min="0"
-            max={Math.floor(gridSizeInput * gridSizeInput * 0.5)}
+            max={Math.floor(gridSizeInput * gridSizeInput * MAX_OBSTACLE_PERCENTAGE)}
             value={obstacleCountInput}
             onChange={(e) => setObstacleCountInput(parseInt(e.target.value))}
             disabled={gameState === "playing"}
