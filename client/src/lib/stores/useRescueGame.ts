@@ -93,6 +93,57 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     return obstacleTypes[randomIndex];
   };
   
+  // Helper to check if there is a path from truck to fire
+  const isPathPossible = (truckPos: Position, firePos: Position, obstacleArray: Obstacle[]): boolean => {
+    // Create a grid representation for pathfinding
+    const { gridSize } = get();
+    const grid: boolean[][] = Array(gridSize.y).fill(null).map(() => Array(gridSize.x).fill(true));
+    
+    // Mark obstacles on the grid
+    for (const obstacle of obstacleArray) {
+      grid[obstacle.y][obstacle.x] = false;
+    }
+    
+    // BFS queue
+    const queue: Position[] = [truckPos];
+    // Visited locations
+    const visited: boolean[][] = Array(gridSize.y).fill(null).map(() => Array(gridSize.x).fill(false));
+    visited[truckPos.y][truckPos.x] = true;
+    
+    // Directions (up, right, down, left)
+    const dx = [0, 1, 0, -1];
+    const dy = [-1, 0, 1, 0];
+    
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      
+      // If we've reached the fire, a path exists
+      if (current.x === firePos.x && current.y === firePos.y) {
+        return true;
+      }
+      
+      // Try all four directions
+      for (let i = 0; i < 4; i++) {
+        const newX = current.x + dx[i];
+        const newY = current.y + dy[i];
+        
+        // Check if within grid boundaries
+        if (newX < 0 || newX >= gridSize.x || newY < 0 || newY >= gridSize.y) {
+          continue;
+        }
+        
+        // Check if not an obstacle and not visited
+        if (grid[newY][newX] && !visited[newY][newX]) {
+          visited[newY][newX] = true;
+          queue.push({ x: newX, y: newY });
+        }
+      }
+    }
+    
+    // If we exhaust the queue without finding the fire, no path exists
+    return false;
+  };
+
   // Initialize or reset the game
   const initializeGame = () => {
     const { gridSize, obstacleCount } = get();
@@ -123,13 +174,36 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
         firePosition: { x: fireX, y: fireY }
       };
       
-      // Generate obstacles
-      for (let i = 0; i < obstacleCount; i++) {
-        if (i >= gridSize.x * gridSize.y - 2) break; // Safety check
+      // Maximum attempts to create valid obstacle configuration
+      const maxAttempts = 100;
+      let attempts = 0;
+      
+      // Generate obstacles and ensure there's always a valid path
+      while (newObstacles.length < obstacleCount && attempts < maxAttempts) {
+        attempts++;
         
+        // Clear obstacles and try again if too many attempts
+        if (attempts === maxAttempts - 1) {
+          newObstacles.length = 0;
+          attempts = 0;
+        }
+        
+        // Try adding a new obstacle
         const newPos = getRandomPosition();
         const obstacleType = getRandomObstacleType();
+        
+        // Temporarily add the obstacle
         newObstacles.push({ ...newPos, type: obstacleType });
+        
+        // Check if a path still exists with this new obstacle
+        if (!isPathPossible(
+          { x: truckX, y: truckY }, 
+          { x: fireX, y: fireY }, 
+          newObstacles
+        )) {
+          // If no path, remove the last obstacle
+          newObstacles.pop();
+        }
       }
       
       return {
