@@ -216,7 +216,7 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
 
   // Calculate max obstacles based on the initial grid size
   const initialGridSize = 10;
-  const maxObstacles = Math.floor(initialGridSize * initialGridSize * 0.3);
+  const maxObstacles = Math.floor(initialGridSize * initialGridSize * 0.5);
 
   return {
     // State
