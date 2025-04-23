@@ -318,8 +318,8 @@ const RescueGame: React.FC = () => {
       width: '100%',
       maxWidth: '800px',
       margin: '0 auto',
-      padding: '0 10px 10px 10px', // Removed top padding
-      overflowY: 'hidden', // Prevent vertical scrolling when using arrow keys
+      padding: '0 10px 30px 10px', // Added more bottom padding for the stats bar
+      overflowY: 'auto', // Changed to auto to allow scrolling
       overflowX: 'hidden',
       minHeight: '100vh',
       height: 'auto',
@@ -676,16 +676,15 @@ const RescueGame: React.FC = () => {
 
       {/* Game statistics counter */}
       <div style={{
-        position: "fixed",
-        bottom: "10px",
-        left: "0",
+        position: "relative",
         width: "100%",
         textAlign: "center",
         fontSize: "14px",
         color: "white",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
-        padding: "5px 0",
-        zIndex: 50
+        padding: "8px 0",
+        marginTop: "20px",
+        borderRadius: "4px"
       }}>
         <span style={{ marginRight: "15px" }}>👁️ Visits: {visitsCount}</span>
         <span style={{ marginRight: "15px" }}>🎮 Games Played: {gamesPlayedCount}</span>
