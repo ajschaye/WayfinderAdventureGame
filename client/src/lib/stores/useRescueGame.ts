@@ -32,6 +32,9 @@ interface RescueGameState {
   firePosition: Position;
   obstacles: Obstacle[];
   moveCooldown: boolean;
+  visitsCount: number;       // Track total visits to the game
+  gamesPlayedCount: number;  // Track how many games have been played
+  gamesWonCount: number;     // Track how many games have been won
   
   // Actions
   setGridSize: (x: number, y: number) => void;
@@ -45,8 +48,14 @@ interface RescueGameState {
   getRandomObstacleType: () => ObstacleType;
 }
 
+// Ensure these properties are typed correctly
+type StoreApi = {
+  (partial: RescueGameState | Partial<RescueGameState> | ((state: RescueGameState) => RescueGameState | Partial<RescueGameState>), replace?: false | undefined): void;
+  (state: RescueGameState | ((state: RescueGameState) => RescueGameState), replace: true): void;
+};
+
 // Create the store
-export const useRescueGame = create<RescueGameState>((set, get) => {
+export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
   // Helper function to check if position is valid
   const isValidPosition = (x: number, y: number): boolean => {
     const { gridSize, obstacles } = get();
@@ -209,10 +218,16 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
         }
       }
       
+      // Make sure to keep counters when resetting
+      const { visitsCount, gamesPlayedCount, gamesWonCount } = get();
+      
       return {
         ...state,
         obstacles: newObstacles,
-        gameState: "ready"
+        gameState: "ready",
+        visitsCount,
+        gamesPlayedCount,
+        gamesWonCount
       };
     });
   };
@@ -220,6 +235,30 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
   // Calculate max obstacles based on the initial grid size
   const initialGridSize = 10;
   const maxObstacles = Math.floor(initialGridSize * initialGridSize * MAX_OBSTACLE_PERCENTAGE);
+
+  // Try to load counters from localStorage if available
+  let initialVisits = 0;
+  let initialGamesPlayed = 0;
+  let initialGamesWon = 0;
+  
+  // Only run this if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    try {
+      const savedVisits = localStorage.getItem('fireRescueVisits');
+      const savedGamesPlayed = localStorage.getItem('fireRescueGamesPlayed');
+      const savedGamesWon = localStorage.getItem('fireRescueGamesWon');
+      
+      if (savedVisits) initialVisits = parseInt(savedVisits, 10);
+      if (savedGamesPlayed) initialGamesPlayed = parseInt(savedGamesPlayed, 10);
+      if (savedGamesWon) initialGamesWon = parseInt(savedGamesWon, 10);
+      
+      // Increment visits on page load
+      initialVisits++;
+      localStorage.setItem('fireRescueVisits', initialVisits.toString());
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+    }
+  }
 
   return {
     // State
@@ -230,6 +269,9 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     firePosition: { x: Math.floor(initialGridSize / 2), y: 0 },  // Default position at top center (within top third)
     obstacles: [] as Obstacle[],
     moveCooldown: false,
+    visitsCount: initialVisits,
+    gamesPlayedCount: initialGamesPlayed,
+    gamesWonCount: initialGamesWon,
     
     // Methods
     getRandomPosition,
@@ -274,21 +316,50 @@ export const useRescueGame = create<RescueGameState>((set, get) => {
     
     // Check win condition
     checkWinCondition: () => {
-      const { fireTruckPosition, firePosition } = get();
+      const { fireTruckPosition, firePosition, gamesWonCount } = get();
       
       if (
         fireTruckPosition.x === firePosition.x &&
         fireTruckPosition.y === firePosition.y
       ) {
         // Player wins!
-        set({ gameState: "won" });
+        const newGamesWon = gamesWonCount + 1;
+        set({ 
+          gameState: "won",
+          gamesWonCount: newGamesWon
+        });
+        
+        // Update localStorage
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem('fireRescueGamesWon', newGamesWon.toString());
+          } catch (error) {
+            console.error("Error saving to localStorage:", error);
+          }
+        }
+        
         // Sound will be played in component
       }
     },
     
     // Start game
     startGame: () => {
-      set({ gameState: "playing" });
+      const { gamesPlayedCount } = get();
+      const newGamesPlayed = gamesPlayedCount + 1;
+      
+      set({ 
+        gameState: "playing",
+        gamesPlayedCount: newGamesPlayed
+      });
+      
+      // Update localStorage
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('fireRescueGamesPlayed', newGamesPlayed.toString());
+        } catch (error) {
+          console.error("Error saving to localStorage:", error);
+        }
+      }
     },
     
     // Stop game

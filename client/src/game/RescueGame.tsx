@@ -28,7 +28,10 @@ const RescueGame: React.FC = () => {
     stopGame,
     resetGame,
     setGridSize,
-    setObstacleCount
+    setObstacleCount,
+    visitsCount,
+    gamesPlayedCount,
+    gamesWonCount
   } = useRescueGame();
 
   const { toggleMute, isMuted, playHit, playSuccess, playClapping, playWaterSpray, backgroundMusic } = useAudio();
@@ -670,6 +673,24 @@ const RescueGame: React.FC = () => {
           {gameState === "ready" && <p style={{ fontSize: "18px", margin: 0 }}>Press the Play button to begin.</p>}
         </div>
       )}
+
+      {/* Game statistics counter */}
+      <div style={{
+        position: "fixed",
+        bottom: "10px",
+        left: "0",
+        width: "100%",
+        textAlign: "center",
+        fontSize: "14px",
+        color: "white",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        padding: "5px 0",
+        zIndex: 50
+      }}>
+        <span style={{ marginRight: "15px" }}>👁️ Visits: {visitsCount}</span>
+        <span style={{ marginRight: "15px" }}>🎮 Games Played: {gamesPlayedCount}</span>
+        <span>🏆 Games Won: {gamesWonCount}</span>
+      </div>
 
       {/* CSS Animations */}
       <style>
