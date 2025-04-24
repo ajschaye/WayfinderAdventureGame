@@ -686,9 +686,8 @@ const RescueGame: React.FC = () => {
         marginTop: "20px",
         borderRadius: "4px"
       }}>
-        <span style={{ marginRight: "15px" }}>👁️ Visits: {visitsCount}</span>
-        <span style={{ marginRight: "15px" }}>🎮 Games Played: {gamesPlayedCount}</span>
-        <span>🏆 Games Won: {gamesWonCount}</span>
+        <span style={{ marginRight: "20px" }}>👁️ Visits: {visitsCount}</span>
+        <span>🎮 Games Played: {gamesPlayedCount}</span>
       </div>
 
       {/* CSS Animations */}
