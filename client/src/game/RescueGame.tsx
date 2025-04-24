@@ -684,10 +684,18 @@ const RescueGame: React.FC = () => {
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         padding: "8px 0",
         marginTop: "20px",
-        borderRadius: "4px"
+        borderRadius: "4px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "5px"
       }}>
-        <span style={{ marginRight: "20px" }}>👁️ Visits: {visitsCount}</span>
-        <span>🎮 Games Played: {gamesPlayedCount}</span>
+        <div>
+          <span style={{ marginRight: "20px" }}>👁️ Visits: {visitsCount}</span>
+          <span>🎮 Games Played: {gamesPlayedCount}</span>
+        </div>
+        <div style={{ fontSize: "10px", color: "black" }}>
+          ©️ Copyright 2025. All Rights Reserved.
+        </div>
       </div>
 
       {/* CSS Animations */}
