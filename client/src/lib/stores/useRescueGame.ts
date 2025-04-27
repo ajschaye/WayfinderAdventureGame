@@ -294,21 +294,46 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       while (!clamAdded && attempts < maxAttempts) {
         attempts++;
         
-        // Try to find a valid position for the giant clam
-        const newPos = getRandomPosition();
+        // Generate a random position away from the truck and fire
+        const gridWidth = gridSize.x;
+        const gridHeight = gridSize.y;
         
-        // Only add if it's a valid position for a 2x2 clam
-        if (isPositionSuitableForGiantClam(newPos.x, newPos.y)) {
-          // Add the giant clam
-          newObstacles.push({ ...newPos, type: "giant-clam" });
+        let clamX, clamY;
+        do {
+          // Generate random coordinates
+          clamX = Math.floor(Math.random() * (gridWidth - 1)); // -1 to ensure there's space for 2nd cell
+          clamY = Math.floor(Math.random() * (gridHeight - 1)); // -1 to ensure there's space for 2nd cell
           
-          // Check if a path still exists with this clam
-          if (isPathPossible({ x: truckX, y: truckY }, { x: fireX, y: fireY }, newObstacles)) {
-            clamAdded = true;
-          } else {
-            // If no path, remove the clam and try again
-            newObstacles.pop();
-          }
+          // Ensure the clam isn't too close to the truck or fire
+          const minDistanceFromTruck = 2;
+          const minDistanceFromFire = 2;
+          
+          // Check distance from truck and fire
+          const distanceFromTruck = Math.abs(clamX - truckX) + Math.abs(clamY - truckY);
+          const distanceFromFire = Math.abs(clamX - fireX) + Math.abs(clamY - fireY);
+          
+          // Continue the loop if the clam is too close
+        } while (
+          // Make sure there's room for the 2x2 clam
+          clamX >= gridWidth - 1 || 
+          clamY >= gridHeight - 1 ||
+          
+          // Make sure it doesn't overlap with the truck
+          (clamX <= truckX && truckX <= clamX + 1 && clamY <= truckY && truckY <= clamY + 1) ||
+          
+          // Make sure it doesn't overlap with the fire
+          (clamX <= fireX && fireX <= clamX + 1 && clamY <= fireY && fireY <= clamY + 1)
+        );
+        
+        // Create the clam at this position
+        newObstacles.push({ x: clamX, y: clamY, type: "giant-clam" });
+          
+        // Check if a path still exists with this clam
+        if (isPathPossible({ x: truckX, y: truckY }, { x: fireX, y: fireY }, newObstacles)) {
+          clamAdded = true;
+        } else {
+          // If no path, remove the clam and try again
+          newObstacles.pop();
         }
         
         // Reset if too many attempts
@@ -338,6 +363,22 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
         
         // Try adding a new obstacle
         const newPos = getRandomPosition();
+        
+        // If we already have the first clam, don't try to add more obstacles on top of it
+        const isPartOfExistingClam = newObstacles.some(obs => 
+          obs.type === 'giant-clam' && (
+            (newPos.x === obs.x && newPos.y === obs.y) ||
+            (newPos.x === obs.x + 1 && newPos.y === obs.y) ||
+            (newPos.x === obs.x && newPos.y === obs.y + 1) ||
+            (newPos.x === obs.x + 1 && newPos.y === obs.y + 1)
+          )
+        );
+        
+        if (isPartOfExistingClam) {
+          // Skip this position if it's part of an existing clam's 2x2 space
+          continue;
+        }
+        
         const obstacleType = getRandomObstacleType();
         
         // Temporarily add the obstacle

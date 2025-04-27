@@ -606,36 +606,48 @@ const RescueGame: React.FC = () => {
                   const bottomLeft = x === giantClamObstacle.x && y === giantClamObstacle.y + 1;
                   const bottomRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y + 1;
                   
-                  // Create a completely new style object for clam cells
-                  // to avoid any property conflicts
-                  cellStyle = {
-                    width: `${cellSize}px`,
-                    height: `${cellSize}px`,
-                    backgroundColor: '#90e0ef', // Light blue for clam cells
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    border: '2px solid #0096c7', // Thicker border for clam cells
-                    boxSizing: 'border-box',
-                    boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.2)' // Inner shadow for depth
-                  };
-                  
-                  // Different styling based on which part of the clam this cell represents
-                  cellContent = (
-                    <img 
-                      src={src} 
-                      alt={alt} 
-                      style={{ 
-                        width: '85%', 
-                        height: '85%',
-                        animation: gameState === 'playing' ? animation : 'none',
-                        // Adjust opacity to help visualize it's a 2x2 obstacle
-                        opacity: bottomRight ? 0.8 : topRight || bottomLeft ? 0.9 : 1,
-                        // Scale up the top-left image slightly to make it more prominent
-                        transform: topLeft ? 'scale(1.1)' : 'none'
-                      }} 
-                    />
-                  );
+                  // Only show the clam in the top-left cell of the 2x2 grid
+                  if (topLeft) {
+                    // Create a 2x2 cell for the clam
+                    cellStyle = {
+                      width: `${cellSize * 2}px`, // 2 cells wide
+                      height: `${cellSize * 2}px`, // 2 cells tall
+                      backgroundColor: '#90e0ef', // Light blue for clam cells
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      border: '2px solid #0096c7', // Thicker border for clam cells
+                      boxSizing: 'border-box',
+                      boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.2)', // Inner shadow for depth
+                      position: 'absolute',
+                      zIndex: 5, // Ensure it's above other elements
+                      borderRadius: '8px'
+                    };
+                    
+                    // Show the giant clam image only once
+                    cellContent = (
+                      <img 
+                        src={src} 
+                        alt={alt} 
+                        style={{ 
+                          width: '90%', 
+                          height: '90%',
+                          animation: gameState === 'playing' ? animation : 'none'
+                        }} 
+                      />
+                    );
+                  } else {
+                    // For the other 3 cells in the 2x2 grid, make them invisible
+                    cellStyle = {
+                      width: `${cellSize}px`,
+                      height: `${cellSize}px`,
+                      opacity: 0, // Make the cell invisible
+                      pointerEvents: 'none' // Don't interact with these cells
+                    };
+                    
+                    // No content for other cells
+                    cellContent = null;
+                  }
                 } else {
                   // Regular obstacle
                   cellContent = (
