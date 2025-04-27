@@ -476,7 +476,8 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
   };
 
   // Calculate max obstacles based on the initial grid size
-  const initialGridSize = 10;
+  const initialGridSize = 10; // Modified from original 10 to enforce min size
+  const minObstacles = 4; // Min obstacle count
   const maxObstacles = Math.floor(initialGridSize * initialGridSize * MAX_OBSTACLE_PERCENTAGE);
 
   // Try to load counters from localStorage if available

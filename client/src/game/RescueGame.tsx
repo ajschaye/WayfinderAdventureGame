@@ -365,7 +365,7 @@ const RescueGame: React.FC = () => {
           <input
             id="gridSize"
             type="range"
-            min="3"
+            min="4"
             max="10"
             value={gridSizeInput}
             onChange={(e) => setGridSizeInput(parseInt(e.target.value))}
@@ -381,7 +381,7 @@ const RescueGame: React.FC = () => {
           <input
             id="obstacles"
             type="range"
-            min="0"
+            min="4"
             max={Math.floor(gridSizeInput * gridSizeInput * MAX_OBSTACLE_PERCENTAGE)}
             value={obstacleCountInput}
             onChange={(e) => setObstacleCountInput(parseInt(e.target.value))}
