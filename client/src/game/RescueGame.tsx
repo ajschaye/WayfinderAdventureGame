@@ -513,7 +513,7 @@ const RescueGame: React.FC = () => {
                 cellStyle.backgroundColor = '#000';
                 
                 // Determine if water spray should be shown from this fire truck
-                const showWaterSpray = isSprayingWater && isNextToFire;
+                const showWaterSpray = isSprayingWater && isNextToIsland;
                 
                 // Calculate direction from fire truck to fire
                 let sprayDirection = "0deg";
@@ -572,7 +572,7 @@ const RescueGame: React.FC = () => {
                       width: '85%', 
                       height: '85%',
                       animation: gameState === 'won' ? 'shrink 1s linear forwards' : 
-                                isSprayingWater && isNextToFire ? 'flicker 0.2s ease-in-out infinite' : 
+                                isSprayingWater && isNextToIsland ? 'flicker 0.2s ease-in-out infinite' : 
                                 'flicker 0.5s ease-in-out infinite'
                     }} 
                   />

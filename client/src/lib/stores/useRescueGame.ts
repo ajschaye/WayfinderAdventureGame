@@ -281,7 +281,7 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
   const initializeGame = () => {
     const { gridSize, obstacleCount } = get();
     
-    // Place fire truck at bottom
+    // Place sailboat at bottom
     const truckX = Math.floor(gridSize.x / 2);
     const truckY = gridSize.y - 1;
     
@@ -488,9 +488,9 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
   // Only run this if we're in a browser environment
   if (typeof window !== 'undefined') {
     try {
-      const savedVisits = localStorage.getItem('fireRescueVisits');
-      const savedGamesPlayed = localStorage.getItem('fireRescueGamesPlayed');
-      const savedGamesWon = localStorage.getItem('fireRescueGamesWon');
+      const savedVisits = localStorage.getItem('wayfinderVisits');
+      const savedGamesPlayed = localStorage.getItem('wayfinderGamesPlayed');
+      const savedGamesWon = localStorage.getItem('wayfinderGamesWon');
       
       if (savedVisits) initialVisits = parseInt(savedVisits, 10);
       if (savedGamesPlayed) initialGamesPlayed = parseInt(savedGamesPlayed, 10);
@@ -498,7 +498,7 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       
       // Increment visits on page load
       initialVisits++;
-      localStorage.setItem('fireRescueVisits', initialVisits.toString());
+      localStorage.setItem('wayfinderVisits', initialVisits.toString());
     } catch (error) {
       console.error("Error accessing localStorage:", error);
     }
@@ -547,7 +547,7 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       const newX = fireTruckPosition.x + dx;
       const newY = fireTruckPosition.y + dy;
       
-      // Check if the new position is the fire (always valid to move to)
+      // Check if the new position is the island (always valid to move to)
       const isFirePosition = newX === firePosition.x && newY === firePosition.y;
       
       if (isFirePosition || isValidPosition(newX, newY)) {
@@ -576,7 +576,7 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
         // Update localStorage
         if (typeof window !== 'undefined') {
           try {
-            localStorage.setItem('fireRescueGamesWon', newGamesWon.toString());
+            localStorage.setItem('wayfinderGamesWon', newGamesWon.toString());
           } catch (error) {
             console.error("Error saving to localStorage:", error);
           }
@@ -599,7 +599,7 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       // Update localStorage
       if (typeof window !== 'undefined') {
         try {
-          localStorage.setItem('fireRescueGamesPlayed', newGamesPlayed.toString());
+          localStorage.setItem('wayfinderGamesPlayed', newGamesPlayed.toString());
         } catch (error) {
           console.error("Error saving to localStorage:", error);
         }
