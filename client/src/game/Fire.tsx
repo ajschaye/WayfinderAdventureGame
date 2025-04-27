@@ -1,53 +1,59 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRescueGame } from "../lib/stores/useRescueGame";
 
-// Create a fire with animated flames
-const Fire = ({ position }: { position: [number, number, number] }) => {
-  const fireRef = useRef<THREE.Group>(null);
+// Create a tropical island with gentle animation
+const Island = ({ position }: { position: [number, number, number] }) => {
+  const islandRef = useRef<THREE.Group>(null);
   const { gameState } = useRescueGame();
 
-  // Animate the fire
+  // Animate the island gently floating
   useFrame((_, delta) => {
-    if (!fireRef.current) return;
+    if (!islandRef.current) return;
     
     if (gameState === "won") {
-      // Extinguish the fire when won (scale down)
-      fireRef.current.scale.x = Math.max(0, fireRef.current.scale.x - delta * 2);
-      fireRef.current.scale.y = Math.max(0, fireRef.current.scale.y - delta * 2);
-      fireRef.current.scale.z = Math.max(0, fireRef.current.scale.z - delta * 2);
+      // Celebratory animation when reached (subtle glow or pulse)
+      const pulse = 1 + Math.sin(Date.now() * 0.005) * 0.1;
+      islandRef.current.scale.set(pulse, pulse, pulse);
     } else {
-      // Animate fire flicker
-      const flicker = 0.95 + Math.sin(Date.now() * 0.01) * 0.05;
-      fireRef.current.scale.set(flicker, flicker + Math.sin(Date.now() * 0.02) * 0.1, flicker);
+      // Gentle bobbing animation in the water
+      const bobbing = 0.98 + Math.sin(Date.now() * 0.001) * 0.02;
+      islandRef.current.position.y = position[1] + Math.sin(Date.now() * 0.002) * 0.05;
+      islandRef.current.scale.set(bobbing, bobbing, bobbing);
     }
   });
 
   return (
-    <group ref={fireRef} position={position}>
-      {/* Base fire */}
-      <mesh position={[0, 0.2, 0]}>
-        <coneGeometry args={[0.3, 0.8, 8]} />
-        <meshStandardMaterial color="orange" emissive="orange" emissiveIntensity={0.5} />
+    <group ref={islandRef} position={position}>
+      {/* Island base */}
+      <mesh position={[0, 0, 0]}>
+        <cylinderGeometry args={[0.4, 0.5, 0.2, 16]} />
+        <meshStandardMaterial color="#e9c46a" /> {/* Sandy beach color */}
       </mesh>
       
-      {/* Middle flame */}
-      <mesh position={[0, 0.5, 0]}>
-        <coneGeometry args={[0.2, 0.6, 8]} />
-        <meshStandardMaterial color="yellow" emissive="yellow" emissiveIntensity={0.8} />
+      {/* Island vegetation */}
+      <mesh position={[0, 0.15, 0]}>
+        <coneGeometry args={[0.3, 0.3, 16]} />
+        <meshStandardMaterial color="#2a9d8f" /> {/* Tropical foliage color */}
       </mesh>
       
-      {/* Top flame */}
-      <mesh position={[0, 0.7, 0]}>
-        <coneGeometry args={[0.1, 0.4, 8]} />
-        <meshStandardMaterial color="red" emissive="red" emissiveIntensity={0.5} />
+      {/* Palm tree */}
+      <mesh position={[0, 0.3, 0]}>
+        <cylinderGeometry args={[0.03, 0.05, 0.3, 8]} />
+        <meshStandardMaterial color="#774936" /> {/* Brown trunk */}
       </mesh>
       
-      {/* Light from the fire */}
-      <pointLight color="orange" intensity={1} distance={3} />
+      {/* Palm leaves */}
+      <mesh position={[0, 0.5, 0]} rotation={[0.2, 0, 0]}>
+        <coneGeometry args={[0.2, 0.2, 5]} />
+        <meshStandardMaterial color="#52b788" /> {/* Palm leaf green */}
+      </mesh>
+      
+      {/* Gentle light from the island */}
+      <pointLight color="#f8edeb" intensity={0.5} distance={2} />
     </group>
   );
 };
 
-export default Fire;
+export default Island;
