@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Island Base -->
+  <ellipse cx="50" cy="75" rx="40" ry="20" fill="#F4A261" />
+  
+  <!-- Ocean Waves -->
+  <path d="M10,75 Q25,70 40,75 Q55,80 70,75 Q85,70 100,75 L100,100 L0,100 Z" fill="#48CAE4" />
+  
+  <!-- Palm Tree Trunk -->
+  <path d="M45,35 C48,50 50,60 50,75" stroke="#774936" stroke-width="5" fill="none" />
+  
+  <!-- Palm Tree Leaves -->
+  <path d="M50,35 C35,25 25,30 20,40" stroke="#38B000" stroke-width="4" fill="none" />
+  <path d="M50,35 C65,25 75,30 80,40" stroke="#38B000" stroke-width="4" fill="none" />
+  <path d="M50,35 C40,20 45,10 55,5" stroke="#38B000" stroke-width="4" fill="none" />
+  <path d="M50,35 C60,20 55,10 45,5" stroke="#38B000" stroke-width="4" fill="none" />
+  
+  <!-- Second Smaller Palm Tree -->
+  <path d="M65,45 C67,55 68,65 70,75" stroke="#774936" stroke-width="3" fill="none" />
+  
+  <!-- Small Palm Tree Leaves -->
+  <path d="M70,45 C60,40 55,42 53,48" stroke="#38B000" stroke-width="2" fill="none" />
+  <path d="M70,45 C80,40 85,42 87,48" stroke="#38B000" stroke-width="2" fill="none" />
+  <path d="M70,45 C65,35 67,30 72,28" stroke="#38B000" stroke-width="2" fill="none" />
+  <path d="M70,45 C75,35 73,30 68,28" stroke="#38B000" stroke-width="2" fill="none" />
+  
+  <!-- Coconuts -->
+  <circle cx="48" cy="40" r="3" fill="#774936" />
+  <circle cx="52" cy="38" r="3" fill="#774936" />
+</svg>

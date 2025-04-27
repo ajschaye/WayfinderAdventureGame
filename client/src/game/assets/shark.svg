@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Shark Body -->
+  <path d="M80,50 C80,40 70,30 50,30 C30,30 10,40 10,50 C10,60 30,70 50,70 C70,70 80,60 80,50 Z" fill="#6c757d" />
+  
+  <!-- Shark Fin -->
+  <path d="M50,30 L60,10 L70,30" fill="#6c757d" />
+  
+  <!-- Shark Tail -->
+  <path d="M80,50 L95,30 L85,50 L95,70 L80,50" fill="#6c757d" />
+  
+  <!-- Shark Eye -->
+  <circle cx="25" cy="45" r="3" fill="#000000" />
+  
+  <!-- Shark Mouth -->
+  <path d="M10,50 C20,53 30,55 50,55" fill="none" stroke="#000000" stroke-width="1" />
+  
+  <!-- Shark Teeth -->
+  <path d="M20,55 L23,58 L26,55 L29,58 L32,55 L35,58 L38,55 L41,58 L44,55 L47,58 L50,55" fill="none" stroke="#ffffff" stroke-width="2" />
+  
+  <!-- Shark Gills -->
+  <path d="M32,40 L32,48" fill="none" stroke="#000000" stroke-width="1" />
+  <path d="M37,38 L37,48" fill="none" stroke="#000000" stroke-width="1" />
+  <path d="M42,38 L42,48" fill="none" stroke="#000000" stroke-width="1" />
+</svg>

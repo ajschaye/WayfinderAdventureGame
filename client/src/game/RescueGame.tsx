@@ -4,14 +4,12 @@ import { useAudio } from '../lib/stores/useAudio';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Confetti } from '../components/game/Confetti';
 import { useIsMobile } from '../hooks/use-is-mobile';
-import fireTruckSvg from './assets/fire-truck.svg';
-import fireSvg from './assets/fire.svg';
+import sailboatSvg from './assets/sailboat.svg';
+import tropicalIslandSvg from './assets/tropical-island.svg';
 import obstacleSvg from './assets/obstacle.svg';
-import puddleSvg from './assets/puddle.svg';
-import fallenTreeSvg from './assets/fallen-tree.svg';
-import trafficConeSvg from './assets/traffic-cone.svg';
-import bouncingBallSvg from './assets/bouncing-ball.svg';
-import gooseSvg from './assets/goose.svg';
+import sharkSvg from './assets/shark.svg';
+import coconutSvg from './assets/coconut.svg';
+import giantClamSvg from './assets/giant-clam.svg';
 import waterSpraySvg from './assets/water-spray.svg';
 
 const RescueGame: React.FC = () => {
@@ -323,7 +321,7 @@ const RescueGame: React.FC = () => {
       overflowX: 'hidden',
       minHeight: '100vh',
       height: 'auto',
-      backgroundColor: '#e63946', // Red background
+      backgroundColor: '#0077b6', // Ocean blue background
       position: 'relative'
     }}>
       {/* Confetti effect when player wins */}
@@ -350,7 +348,7 @@ const RescueGame: React.FC = () => {
       
       {/* Game controls panel */}
       <div style={{
-        backgroundColor: "#e63946", // Changed from white to match the background
+        backgroundColor: "#0096c7", // Ocean blue panel
         padding: "15px",
         width: "100%",
         marginBottom: "15px",
@@ -423,14 +421,14 @@ const RescueGame: React.FC = () => {
       
       {/* Play/stop button */}
       <div style={{
-        backgroundColor: "#ffd166",
+        backgroundColor: "#90e0ef",
         borderRadius: "50px",
         padding: "10px 30px",
         cursor: "pointer",
         fontWeight: "bold",
         marginBottom: "20px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-        color: "#d62828"
+        color: "#03045e"
       }}
       onClick={() => {
         if (gameState === "playing") {
@@ -447,7 +445,7 @@ const RescueGame: React.FC = () => {
       {/* Game grid container */}
       <div style={{
         width: "100%",
-        backgroundColor: '#ccc',
+        backgroundColor: '#ade8f4',
         padding: '10px',
         borderRadius: '8px',
         marginBottom: '20px',
@@ -507,8 +505,8 @@ const RescueGame: React.FC = () => {
                 cellContent = (
                   <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <img 
-                      src={fireTruckSvg} 
-                      alt="Fire Truck" 
+                      src={sailboatSvg} 
+                      alt="Sailboat" 
                       style={{ 
                         width: '85%', 
                         height: '85%',
@@ -546,8 +544,8 @@ const RescueGame: React.FC = () => {
               } else if (isFire) {
                 cellContent = (
                   <img 
-                    src={fireSvg} 
-                    alt="Fire" 
+                    src={tropicalIslandSvg} 
+                    alt="Tropical Island" 
                     style={{ 
                       width: '85%', 
                       height: '85%',
@@ -565,15 +563,15 @@ const RescueGame: React.FC = () => {
                 const getObstacleSvg = (type: ObstacleType) => {
                   switch (type) {
                     case 'puddle':
-                      return { src: puddleSvg, alt: "Water Puddle", animation: "pulse 3s ease-in-out infinite" };
+                      return { src: sharkSvg, alt: "Shark", animation: "pulse 3s ease-in-out infinite" };
                     case 'fallen-tree':
-                      return { src: fallenTreeSvg, alt: "Fallen Tree", animation: "none" };
+                      return { src: coconutSvg, alt: "Coconut", animation: "bounce 0.5s alternate infinite" };
                     case 'traffic-cone':
-                      return { src: trafficConeSvg, alt: "Traffic Cone", animation: "pulse 2s ease-in-out infinite" };
+                      return { src: giantClamSvg, alt: "Giant Clam", animation: "pulse 2s ease-in-out infinite" };
                     case 'bouncing-ball':
-                      return { src: bouncingBallSvg, alt: "Bouncing Ball", animation: "bounce 0.5s alternate infinite" };
+                      return { src: sharkSvg, alt: "Shark", animation: "bounce 0.5s alternate infinite" };
                     case 'goose':
-                      return { src: gooseSvg, alt: "Goose", animation: "waddle 1s ease-in-out infinite" };
+                      return { src: giantClamSvg, alt: "Giant Clam", animation: "waddle 1s ease-in-out infinite" };
                     default:
                       return { src: obstacleSvg, alt: "Obstacle", animation: "pulse 2s ease-in-out infinite" };
                   }

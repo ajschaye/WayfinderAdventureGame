@@ -56,7 +56,7 @@ function App() {
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'flex-start',
-      background: '#e63946', // Red background
+      background: '#0077b6', // Ocean blue background
       color: 'white',
       paddingTop: '0', // Removed padding at the top
       paddingBottom: '30px'

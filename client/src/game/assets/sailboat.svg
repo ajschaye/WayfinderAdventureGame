@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60">
+  <!-- Catamaran Hull -->
+  <rect x="15" y="40" width="70" height="6" fill="#FFFFFF" rx="2" />
+  <rect x="20" y="46" width="60" height="4" fill="#3A86FF" rx="1" />
+  
+  <!-- Hulls/Pontoons -->
+  <rect x="20" y="50" width="15" height="5" fill="#003566" rx="2" />
+  <rect x="65" y="50" width="15" height="5" fill="#003566" rx="2" />
+  
+  <!-- Deck/Platform -->
+  <rect x="25" y="35" width="50" height="5" fill="#FFB703" rx="1" />
+  
+  <!-- Mast -->
+  <rect x="50" y="10" width="2" height="25" fill="#6C757D" />
+  
+  <!-- Main Sail -->
+  <polygon points="52,10 52,35 75,35" fill="#FFFFFF" />
+  <polygon points="52,10 52,35 75,35" fill="none" stroke="#FB8500" stroke-width="1" />
+  
+  <!-- Jib Sail -->
+  <polygon points="50,15 35,35 50,35" fill="#FFFFFF" />
+  <polygon points="50,15 35,35 50,35" fill="none" stroke="#FB8500" stroke-width="1" />
+  
+  <!-- Flag on top -->
+  <polygon points="52,8 58,10 52,12" fill="#FF0000" />
+</svg>
