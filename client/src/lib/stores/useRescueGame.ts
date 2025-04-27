@@ -184,6 +184,15 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       return obstacleTypes[randomIndex];
     }
     
+    // If we're generating the first few obstacles and don't have a clam yet,
+    // increase the chance of generating a clam
+    if (obstacles.length < 5 && giantClamCount === 0) {
+      // 50% chance to generate a clam when we don't have one yet
+      if (Math.random() < 0.5) {
+        return "giant-clam";
+      }
+    }
+    
     // Otherwise return any obstacle type with equal probability
     const obstacleTypes: ObstacleType[] = ["shark", "coconut", "giant-clam"];    
     const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
