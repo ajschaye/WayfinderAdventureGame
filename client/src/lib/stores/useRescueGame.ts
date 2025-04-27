@@ -105,8 +105,9 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
   const isPositionSuitableForGiantClam = (x: number, y: number): boolean => {
     const { gridSize, fireTruckPosition, firePosition, obstacles } = get();
     
-    // Check if out of bounds
-    if (x + 1 >= gridSize.x || y + 1 >= gridSize.y) {
+    // Make sure there's room for the entire 2x2 grid of the clam
+    // Checking bounds strictly to ensure clams don't appear off grid
+    if (x < 0 || x + 1 >= gridSize.x || y < 0 || y + 1 >= gridSize.y) {
       return false;
     }
     
@@ -132,6 +133,11 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       (x + 1 === firePosition.x && y + 1 === firePosition.y) ||
       obstacles.some(obs => obs.x === x + 1 && obs.y === y + 1)
     ) {
+      return false;
+    }
+    
+    // Additional check - make sure the clam will be fully on the grid
+    if (x + 1 >= gridSize.x || y + 1 >= gridSize.y) {
       return false;
     }
     
@@ -177,8 +183,9 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
     const { obstacles } = get();
     const giantClamCount = obstacles.filter(obs => obs.type === "giant-clam").length;
     
-    // If we already have 3 giant clams, only return shark or coconut
+    // Enforce a strict limit of 3 giant clams maximum
     if (giantClamCount >= 3) {
+      // If we already have 3 giant clams, only return shark or coconut
       const obstacleTypes: ObstacleType[] = ["shark", "coconut"];
       const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
       return obstacleTypes[randomIndex];
@@ -193,10 +200,16 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       }
     }
     
-    // Otherwise return any obstacle type with equal probability
-    const obstacleTypes: ObstacleType[] = ["shark", "coconut", "giant-clam"];    
-    const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
-    return obstacleTypes[randomIndex];
+    // Otherwise return any obstacle type with equal probability, but with a lower chance for giant clams
+    // to avoid having too many of them
+    if (Math.random() < 0.3) { // 30% chance for a giant clam
+      return "giant-clam";
+    } else {
+      // 70% chance for a shark or coconut
+      const obstacleTypes: ObstacleType[] = ["shark", "coconut"];    
+      const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
+      return obstacleTypes[randomIndex];
+    }
   };
   
   // Helper to check if there is a path from truck to fire
@@ -396,8 +409,18 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
           continue;
         }
         
-        // Get the next obstacle type
-        const obstacleType = getRandomObstacleType();
+        // Count existing giant clams
+        const giantClamCount = newObstacles.filter(obs => obs.type === "giant-clam").length;
+        
+        // Get the next obstacle type, ensuring we don't exceed 3 giant clams
+        let obstacleType = getRandomObstacleType();
+        
+        // Double-check we don't exceed giant clam limit
+        if (obstacleType === "giant-clam" && giantClamCount >= 3) {
+          // Force a non-clam obstacle type if we already have 3 clams
+          const nonClamTypes: ObstacleType[] = ["shark", "coconut"];
+          obstacleType = nonClamTypes[Math.floor(Math.random() * nonClamTypes.length)];
+        }
         
         // Check if adding this obstacle would exceed the total count
         // Giant clams count as 4 spaces
@@ -406,6 +429,13 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
           // Skip giant clams when they would put us over the limit, try with regular obstacles
           if (obstacleType === "giant-clam") {
             continue;
+          }
+        }
+        
+        // Ensure giant clam fits on the grid (extra boundary check)
+        if (obstacleType === "giant-clam") {
+          if (newPos.x + 1 >= gridSize.x || newPos.y + 1 >= gridSize.y) {
+            continue; // Skip if clam would go off grid
           }
         }
         
