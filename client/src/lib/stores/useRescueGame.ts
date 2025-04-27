@@ -289,13 +289,50 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       const maxAttempts = 100;
       let attempts = 0;
       
-      // Generate obstacles and ensure there's always a valid path
+      // Always add at least one giant clam first
+      let clamAdded = false;
+      while (!clamAdded && attempts < maxAttempts) {
+        attempts++;
+        
+        // Try to find a valid position for the giant clam
+        const newPos = getRandomPosition();
+        
+        // Only add if it's a valid position for a 2x2 clam
+        if (isPositionSuitableForGiantClam(newPos.x, newPos.y)) {
+          // Add the giant clam
+          newObstacles.push({ ...newPos, type: "giant-clam" });
+          
+          // Check if a path still exists with this clam
+          if (isPathPossible({ x: truckX, y: truckY }, { x: fireX, y: fireY }, newObstacles)) {
+            clamAdded = true;
+          } else {
+            // If no path, remove the clam and try again
+            newObstacles.pop();
+          }
+        }
+        
+        // Reset if too many attempts
+        if (attempts === maxAttempts - 1) {
+          attempts = 0;
+          newObstacles.length = 0;
+        }
+      }
+      
+      // Generate remaining obstacles and ensure there's always a valid path
+      attempts = 0;
       while (newObstacles.length < obstacleCount && attempts < maxAttempts) {
         attempts++;
         
-        // Clear obstacles and try again if too many attempts
+        // Clear obstacles (except the first clam) and try again if too many attempts
         if (attempts === maxAttempts - 1) {
-          newObstacles.length = 0;
+          // Keep the first clam if it exists
+          if (newObstacles.length > 0 && newObstacles[0].type === "giant-clam") {
+            const firstClam = newObstacles[0];
+            newObstacles.length = 0;
+            newObstacles.push(firstClam);
+          } else {
+            newObstacles.length = 0;
+          }
           attempts = 0;
         }
         

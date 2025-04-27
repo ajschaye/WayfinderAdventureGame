@@ -498,7 +498,12 @@ const RescueGame: React.FC = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius: '4px'
+                borderTopLeftRadius: '4px',
+                borderTopRightRadius: '4px',
+                borderBottomLeftRadius: '4px',
+                borderBottomRightRadius: '4px',
+                border: '1px solid #ccc', // Default border for all cells
+                boxSizing: 'border-box' // Ensure border doesn't affect layout
               };
 
               if (isFireTruck) {
@@ -593,17 +598,58 @@ const RescueGame: React.FC = () => {
                 
                 const { src, alt, animation } = getObstacleSvg(obstacle?.type || 'shark');
                 
-                cellContent = (
-                  <img 
-                    src={src} 
-                    alt={alt} 
-                    style={{ 
-                      width: '85%', 
-                      height: '85%',
-                      animation: gameState === 'playing' ? animation : 'none'
-                    }} 
-                  />
-                );
+                // If it's a giant clam, we need to show it slightly differently
+                // in each of the 4 cells based on their relative position
+                if (obstacle?.type === 'giant-clam' && giantClamObstacle) {
+                  const topLeft = x === giantClamObstacle.x && y === giantClamObstacle.y;
+                  const topRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y;
+                  const bottomLeft = x === giantClamObstacle.x && y === giantClamObstacle.y + 1;
+                  const bottomRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y + 1;
+                  
+                  // Create a completely new style object for clam cells
+                  // to avoid any property conflicts
+                  cellStyle = {
+                    width: `${cellSize}px`,
+                    height: `${cellSize}px`,
+                    backgroundColor: '#90e0ef', // Light blue for clam cells
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    border: '2px solid #0096c7', // Thicker border for clam cells
+                    boxSizing: 'border-box',
+                    boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.2)' // Inner shadow for depth
+                  };
+                  
+                  // Different styling based on which part of the clam this cell represents
+                  cellContent = (
+                    <img 
+                      src={src} 
+                      alt={alt} 
+                      style={{ 
+                        width: '85%', 
+                        height: '85%',
+                        animation: gameState === 'playing' ? animation : 'none',
+                        // Adjust opacity to help visualize it's a 2x2 obstacle
+                        opacity: bottomRight ? 0.8 : topRight || bottomLeft ? 0.9 : 1,
+                        // Scale up the top-left image slightly to make it more prominent
+                        transform: topLeft ? 'scale(1.1)' : 'none'
+                      }} 
+                    />
+                  );
+                } else {
+                  // Regular obstacle
+                  cellContent = (
+                    <img 
+                      src={src} 
+                      alt={alt} 
+                      style={{ 
+                        width: '85%', 
+                        height: '85%',
+                        animation: gameState === 'playing' ? animation : 'none'
+                      }} 
+                    />
+                  );
+                }
               }
 
               return (
