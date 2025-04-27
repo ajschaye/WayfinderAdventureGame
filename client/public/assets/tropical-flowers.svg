@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Flowers Group 1 -->
+  <g transform="translate(10, 10)">
+    <!-- Hibiscus Flower -->
+    <circle cx="15" cy="15" r="8" fill="#ff4081" />
+    <path d="M15,7 C15,3 19,3 19,7" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M15,7 C15,3 11,3 11,7" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M23,15 C27,15 27,19 23,19" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M23,15 C27,15 27,11 23,11" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M15,23 C15,27 19,27 19,23" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M15,23 C15,27 11,27 11,23" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M7,15 C3,15 3,19 7,19" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <path d="M7,15 C3,15 3,11 7,11" fill="#ff4081" stroke="#d81b60" stroke-width="1" />
+    <circle cx="15" cy="15" r="3" fill="#ffeb3b" />
+  </g>
+  
+  <!-- Flowers Group 2 -->
+  <g transform="translate(45, 25)">
+    <!-- Plumeria Flower -->
+    <path d="M15,15 L22,8 A5,5 0 0,0 15,8 Z" fill="#fffde7" stroke="#f57f17" stroke-width="1" />
+    <path d="M15,15 L22,22 A5,5 0 0,1 15,22 Z" fill="#fffde7" stroke="#f57f17" stroke-width="1" />
+    <path d="M15,15 L8,22 A5,5 0 0,0 8,15 Z" fill="#fffde7" stroke="#f57f17" stroke-width="1" />
+    <path d="M15,15 L8,8 A5,5 0 0,1 8,15 Z" fill="#fffde7" stroke="#f57f17" stroke-width="1" />
+    <path d="M15,15 L15,5 A5,5 0 0,0 22,8 Z" fill="#fffde7" stroke="#f57f17" stroke-width="1" />
+    <circle cx="15" cy="15" r="3" fill="#ffeb3b" />
+  </g>
+  
+  <!-- Flowers Group 3 -->
+  <g transform="translate(75, 15)">
+    <!-- Bird of Paradise -->
+    <path d="M10,10 Q15,5 20,15" fill="none" stroke="#fb8c00" stroke-width="3" stroke-linecap="round" />
+    <path d="M10,15 L20,5 L15,20 Z" fill="#2196f3" />
+    <path d="M12,15 L16,8 L14,18 Z" fill="#1976d2" />
+    <path d="M8,12 L18,5 L14,16 Z" fill="#ba68c8" />
+  </g>
+  
+  <!-- Flowers Group 4 -->
+  <g transform="translate(20, 60)">
+    <!-- Frangipani Flower -->
+    <circle cx="10" cy="10" r="8" fill="#f8bbd0" />
+    <path d="M10,2 Q5,6 10,10 Q15,6 10,2 Z" fill="#white" stroke="#ec407a" stroke-width="0.5" />
+    <path d="M10,10 Q5,14 2,10 Q5,6 10,10 Z" fill="#white" stroke="#ec407a" stroke-width="0.5" />
+    <path d="M10,10 Q15,14 18,10 Q15,6 10,10 Z" fill="#white" stroke="#ec407a" stroke-width="0.5" />
+    <path d="M10,10 Q15,6 10,18 Q5,14 10,10 Z" fill="#white" stroke="#ec407a" stroke-width="0.5" />
+    <path d="M10,10 Q5,14 10,18 Q15,14 10,10 Z" fill="#white" stroke="#ec407a" stroke-width="0.5" />
+    <circle cx="10" cy="10" r="3" fill="#ffeb3b" />
+  </g>
+  
+  <!-- Flowers Group 5 -->
+  <g transform="translate(55, 65)">
+    <!-- Orchid -->
+    <path d="M10,5 Q5,10 10,15 Q15,10 10,5 Z" fill="#e1bee7" stroke="#8e24aa" stroke-width="1" />
+    <path d="M10,5 Q8,10 10,15 Q12,10 10,5 Z" fill="#ce93d8" stroke="#8e24aa" stroke-width="0.5" />
+    <path d="M10,10 L10,20" fill="none" stroke="#4caf50" stroke-width="1" />
+    <circle cx="10" cy="10" r="2" fill="#f0f4c3" />
+  </g>
+  
+  <!-- Small flowers scattered around -->
+  <circle cx="35" cy="45" r="3" fill="#ff6f00" />
+  <circle cx="40" cy="48" r="2" fill="#f57f17" />
+  <circle cx="30" cy="42" r="2" fill="#ffca28" />
+  
+  <circle cx="65" cy="30" r="2" fill="#ff6f00" />
+  <circle cx="70" cy="32" r="3" fill="#f57f17" />
+  <circle cx="62" cy="28" r="2" fill="#ffca28" />
+  
+  <circle cx="40" cy="80" r="3" fill="#ff6f00" />
+  <circle cx="45" cy="85" r="2" fill="#f57f17" />
+  <circle cx="35" cy="75" r="2" fill="#ffca28" />
+  
+  <circle cx="85" cy="55" r="3" fill="#ff6f00" />
+  <circle cx="80" cy="50" r="2" fill="#f57f17" />
+  <circle cx="90" cy="60" r="2" fill="#ffca28" />
+</svg>
