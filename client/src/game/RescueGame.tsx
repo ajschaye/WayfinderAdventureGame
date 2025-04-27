@@ -474,6 +474,21 @@ const RescueGame: React.FC = () => {
               const isFire = x === firePosition.x && y === firePosition.y;
               const isObstacle = obstacles.some(obs => obs.x === x && obs.y === y);
               
+              // Function to check if a position is part of a giant clam
+              const isPartOfGiantClam = (posX: number, posY: number): Obstacle | undefined => {
+                return obstacles.find(obs => 
+                  obs.type === 'giant-clam' && 
+                  ((posX === obs.x && posY === obs.y) || // Top-left
+                   (posX === obs.x + 1 && posY === obs.y) || // Top-right
+                   (posX === obs.x && posY === obs.y + 1) || // Bottom-left
+                   (posX === obs.x + 1 && posY === obs.y + 1)) // Bottom-right
+                );
+              };
+              
+              // Check if this cell is part of a giant clam
+              const giantClamObstacle = isPartOfGiantClam(x, y);
+              const isGiantClam = !!giantClamObstacle;
+              
               // Set cell content and style
               let cellContent = null;
               let cellStyle: React.CSSProperties = {
@@ -555,29 +570,28 @@ const RescueGame: React.FC = () => {
                     }} 
                   />
                 );
-              } else if (isObstacle) {
-                // Find the obstacle type
-                const obstacle = obstacles.find(obs => obs.x === x && obs.y === y);
+              } else if (isObstacle || isGiantClam) {
+                // For normal obstacles, use the obstacle at this position
+                // For giant clams, use the found clam obstacle (which might be elsewhere in the 2x2 grid)
+                const obstacle = isObstacle 
+                  ? obstacles.find(obs => obs.x === x && obs.y === y)
+                  : giantClamObstacle;
                 
                 // Get the correct SVG based on the obstacle type
                 const getObstacleSvg = (type: ObstacleType) => {
                   switch (type) {
-                    case 'puddle':
+                    case 'shark':
                       return { src: sharkSvg, alt: "Shark", animation: "pulse 3s ease-in-out infinite" };
-                    case 'fallen-tree':
+                    case 'coconut':
                       return { src: coconutSvg, alt: "Coconut", animation: "bounce 0.5s alternate infinite" };
-                    case 'traffic-cone':
+                    case 'giant-clam':
                       return { src: giantClamSvg, alt: "Giant Clam", animation: "pulse 2s ease-in-out infinite" };
-                    case 'bouncing-ball':
-                      return { src: sharkSvg, alt: "Shark", animation: "bounce 0.5s alternate infinite" };
-                    case 'goose':
-                      return { src: giantClamSvg, alt: "Giant Clam", animation: "waddle 1s ease-in-out infinite" };
                     default:
-                      return { src: obstacleSvg, alt: "Obstacle", animation: "pulse 2s ease-in-out infinite" };
+                      return { src: sharkSvg, alt: "Shark", animation: "pulse 2s ease-in-out infinite" };
                   }
                 };
                 
-                const { src, alt, animation } = getObstacleSvg(obstacle?.type || 'puddle');
+                const { src, alt, animation } = getObstacleSvg(obstacle?.type || 'shark');
                 
                 cellContent = (
                   <img 

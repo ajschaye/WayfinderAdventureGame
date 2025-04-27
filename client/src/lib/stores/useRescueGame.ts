@@ -10,7 +10,7 @@ interface Position {
 }
 
 // Obstacle types
-export type ObstacleType = "puddle" | "fallen-tree" | "traffic-cone" | "bouncing-ball" | "goose";
+export type ObstacleType = "shark" | "coconut" | "giant-clam";
 
 // Obstacle with position and type
 export interface Obstacle {
@@ -56,6 +56,29 @@ type StoreApi = {
 
 // Create the store
 export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
+  // Helper function to check if position is part of a giant clam (which takes up 2x2 space)
+  const isPartOfGiantClam = (x: number, y: number): boolean => {
+    const { obstacles } = get();
+    
+    // For each giant clam in the obstacles array
+    for (const obstacle of obstacles) {
+      if (obstacle.type === "giant-clam") {
+        // Check if the position is within the 2x2 grid of this clam
+        // The obstacle's position is the top-left corner of the 2x2 grid
+        if (
+          (x === obstacle.x && y === obstacle.y) || // Top-left
+          (x === obstacle.x + 1 && y === obstacle.y) || // Top-right
+          (x === obstacle.x && y === obstacle.y + 1) || // Bottom-left
+          (x === obstacle.x + 1 && y === obstacle.y + 1) // Bottom-right
+        ) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  };
+  
   // Helper function to check if position is valid
   const isValidPosition = (x: number, y: number): boolean => {
     const { gridSize, obstacles } = get();
@@ -65,8 +88,54 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
       return false;
     }
     
-    // Check for obstacles
-    return !obstacles.some((obstacle) => obstacle.x === x && obstacle.y === y);
+    // Check for regular obstacles
+    if (obstacles.some((obstacle) => obstacle.x === x && obstacle.y === y)) {
+      return false;
+    }
+    
+    // Check for giant clams (which take up 2x2 grid space)
+    if (isPartOfGiantClam(x, y)) {
+      return false;
+    }
+    
+    return true;
+  };
+  
+  // Helper to check if a position is suitable for a giant clam (needs 2x2 space)
+  const isPositionSuitableForGiantClam = (x: number, y: number): boolean => {
+    const { gridSize, fireTruckPosition, firePosition, obstacles } = get();
+    
+    // Check if out of bounds
+    if (x + 1 >= gridSize.x || y + 1 >= gridSize.y) {
+      return false;
+    }
+    
+    // Check if any of the 2x2 positions are occupied
+    if (
+      // Top-left (the original position)
+      (x === fireTruckPosition.x && y === fireTruckPosition.y) ||
+      (x === firePosition.x && y === firePosition.y) ||
+      obstacles.some(obs => obs.x === x && obs.y === y) ||
+      
+      // Top-right
+      (x + 1 === fireTruckPosition.x && y === fireTruckPosition.y) ||
+      (x + 1 === firePosition.x && y === firePosition.y) ||
+      obstacles.some(obs => obs.x === x + 1 && obs.y === y) ||
+      
+      // Bottom-left
+      (x === fireTruckPosition.x && y + 1 === fireTruckPosition.y) ||
+      (x === firePosition.x && y + 1 === firePosition.y) ||
+      obstacles.some(obs => obs.x === x && obs.y === y + 1) ||
+      
+      // Bottom-right
+      (x + 1 === fireTruckPosition.x && y + 1 === fireTruckPosition.y) ||
+      (x + 1 === firePosition.x && y + 1 === firePosition.y) ||
+      obstacles.some(obs => obs.x === x + 1 && obs.y === y + 1)
+    ) {
+      return false;
+    }
+    
+    return true;
   };
   
   // Helper to get random position that's not occupied
@@ -75,17 +144,28 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
     
     let x: number, y: number;
     let isOccupied: boolean;
+    let nextObstacleType: ObstacleType;
+    
+    // Pre-determine what type of obstacle will be placed here
+    // so we can check for giant clam space requirements
+    nextObstacleType = getRandomObstacleType();
     
     do {
       x = Math.floor(Math.random() * gridSize.x);
       y = Math.floor(Math.random() * gridSize.y);
       
-      // Check if position is already occupied
-      isOccupied = (
-        (x === fireTruckPosition.x && y === fireTruckPosition.y) || // Fire truck
-        (x === firePosition.x && y === firePosition.y) || // Fire
-        obstacles.some((obstacle) => obstacle.x === x && obstacle.y === y) // Obstacles
-      );
+      // For giant clams, we need to check a 2x2 grid
+      if (nextObstacleType === 'giant-clam') {
+        isOccupied = !isPositionSuitableForGiantClam(x, y);
+      } else {
+        // Regular obstacles only need to check their own position
+        isOccupied = (
+          (x === fireTruckPosition.x && y === fireTruckPosition.y) || // Fire truck
+          (x === firePosition.x && y === firePosition.y) || // Fire
+          obstacles.some((obstacle) => obstacle.x === x && obstacle.y === y) || // Obstacles
+          isPartOfGiantClam(x, y) // Check if this position is part of a giant clam
+        );
+      }
     } while (isOccupied);
     
     return { x, y };
@@ -93,14 +173,19 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
   
   // Helper to get a random obstacle type
   const getRandomObstacleType = (): ObstacleType => {
-    const obstacleTypes: ObstacleType[] = [
-      "puddle",
-      "fallen-tree",
-      "traffic-cone",
-      "bouncing-ball",
-      "goose"
-    ];
+    // Count the number of giant clams in the current obstacles
+    const { obstacles } = get();
+    const giantClamCount = obstacles.filter(obs => obs.type === "giant-clam").length;
     
+    // If we already have 3 giant clams, only return shark or coconut
+    if (giantClamCount >= 3) {
+      const obstacleTypes: ObstacleType[] = ["shark", "coconut"];
+      const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
+      return obstacleTypes[randomIndex];
+    }
+    
+    // Otherwise return any obstacle type with equal probability
+    const obstacleTypes: ObstacleType[] = ["shark", "coconut", "giant-clam"];    
     const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
     return obstacleTypes[randomIndex];
   };
@@ -114,6 +199,20 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
     // Mark obstacles on the grid
     for (const obstacle of obstacleArray) {
       grid[obstacle.y][obstacle.x] = false;
+      
+      // If it's a giant clam, mark all 4 cells as obstacles (2x2 grid)
+      if (obstacle.type === "giant-clam") {
+        // Make sure we don't go out of bounds with the 2x2 grid
+        if (obstacle.x + 1 < gridSize.x) {
+          grid[obstacle.y][obstacle.x + 1] = false; // Top-right
+        }
+        if (obstacle.y + 1 < gridSize.y) {
+          grid[obstacle.y + 1][obstacle.x] = false; // Bottom-left
+        }
+        if (obstacle.x + 1 < gridSize.x && obstacle.y + 1 < gridSize.y) {
+          grid[obstacle.y + 1][obstacle.x + 1] = false; // Bottom-right
+        }
+      }
     }
     
     // BFS queue
