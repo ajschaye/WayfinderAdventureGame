@@ -470,8 +470,8 @@ const RescueGame: React.FC = () => {
           {Array.from({ length: gridSize.y }).map((_, y) =>
             Array.from({ length: gridSize.x }).map((_, x) => {
               // Determine cell content
-              const isFireTruck = x === fireTruckPosition.x && y === fireTruckPosition.y;
-              const isFire = x === firePosition.x && y === firePosition.y;
+              const isSailboat = x === fireTruckPosition.x && y === fireTruckPosition.y;
+              const isIsland = x === firePosition.x && y === firePosition.y;
               const isObstacle = obstacles.some(obs => obs.x === x && obs.y === y);
               
               // Enhanced function to check if a position is part of a giant clam
@@ -507,8 +507,8 @@ const RescueGame: React.FC = () => {
                 boxSizing: 'border-box' // Ensure border doesn't affect layout
               };
 
-              if (isFireTruck) {
-                // Set background color to black for fire truck cell
+              if (isSailboat) {
+                // Set background color to black for sailboat cell
                 cellStyle.backgroundColor = '#000';
                 
                 // Determine if tropical flowers should be shown from this sailboat
@@ -562,7 +562,7 @@ const RescueGame: React.FC = () => {
                     )}
                   </div>
                 );
-              } else if (isFire) {
+              } else if (isIsland) {
                 cellContent = (
                   <img 
                     src={tropicalIslandSvg} 
@@ -842,7 +842,7 @@ const RescueGame: React.FC = () => {
             50% { transform: scale(0.95); }
           }
           
-          @keyframes spray {
+          @keyframes scatter {
             0% { transform: scaleX(0.9) scaleY(0.9); opacity: 0.7; }
             100% { transform: scaleX(1.1) scaleY(1.1); opacity: 1; }
           }
