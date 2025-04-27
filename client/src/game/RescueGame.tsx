@@ -10,7 +10,6 @@ import obstacleSvg from './assets/obstacle.svg';
 import sharkSvg from './assets/shark.svg';
 import coconutSvg from './assets/coconut.svg';
 import giantClamSvg from './assets/giant-clam.svg';
-import waterSpraySvg from './assets/water-spray.svg';
 import tropicalFlowersSvg from './assets/tropical-flowers.svg';
 
 const RescueGame: React.FC = () => {
@@ -33,7 +32,7 @@ const RescueGame: React.FC = () => {
     gamesWonCount
   } = useRescueGame();
 
-  const { toggleMute, isMuted, playHit, playSuccess, playClapping, playWaterSpray, backgroundMusic } = useAudio();
+  const { toggleMute, isMuted, playHit, playSuccess, playClapping, playFlowerScattering, backgroundMusic } = useAudio();
   
   // Check if the user is on a mobile device
   const isMobile = useIsMobile();
@@ -42,8 +41,8 @@ const RescueGame: React.FC = () => {
   const [gridSizeInput, setGridSizeInput] = useState(gridSize.x);
   const [obstacleCountInput, setObstacleCountInput] = useState(obstacleCount);
   
-  // State to track if the water spray effect is active
-  const [isSprayingWater, setIsSprayingWater] = useState(false);
+  // State to track if the flower scattering effect is active
+  const [isSprayingFlowers, setIsSprayingFlowers] = useState(false);
   
   // Calculate if the sailboat is next to the island (but not on it)
   const isNextToIsland = 
@@ -52,11 +51,11 @@ const RescueGame: React.FC = () => {
 
   // Function to handle scattering tropical flowers when boat is next to island
   const handleFlowerScattering = useCallback(() => {
-    if (!isNextToIsland || isSprayingWater) return false;
+    if (!isNextToIsland || isSprayingFlowers) return false;
     
     // Start scattering tropical flowers
-    setIsSprayingWater(true);
-    playWaterSpray();
+    setIsSprayingFlowers(true);
+    playFlowerScattering();
     
     // After flower scattering animation, allow the boat to move to the island's position
     setTimeout(() => {
@@ -83,12 +82,12 @@ const RescueGame: React.FC = () => {
       setTimeout(() => {
         console.log("Checking win condition after sailboat reached the island");
         checkWinCondition();
-        setIsSprayingWater(false);
+        setIsSprayingFlowers(false);
       }, 300); // Increased timeout to ensure movement completes
     }, 1500); // Scatter flowers for 1.5 seconds before moving
     
     return true;
-  }, [isNextToIsland, isSprayingWater, firePosition, fireTruckPosition, moveTruck, playWaterSpray, checkWinCondition]);
+  }, [isNextToIsland, isSprayingFlowers, firePosition, fireTruckPosition, moveTruck, playFlowerScattering, checkWinCondition]);
 
   // Handle keyboard input
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -97,7 +96,7 @@ const RescueGame: React.FC = () => {
       e.preventDefault();
     }
     
-    if (gameState !== 'playing' || isSprayingWater) return;
+    if (gameState !== 'playing' || isSprayingFlowers) return;
 
     // If next to island and the key would move towards the island, start scattering flowers
     if (isNextToIsland) {
@@ -137,7 +136,7 @@ const RescueGame: React.FC = () => {
       default:
         return;
     }
-  }, [gameState, isSprayingWater, isNextToIsland, fireTruckPosition, firePosition, handleFlowerScattering, moveTruck]);
+  }, [gameState, isSprayingFlowers, isNextToIsland, fireTruckPosition, firePosition, handleFlowerScattering, moveTruck]);
 
   // References for swipe detection
   const touchStartRef = useRef<{ x: number, y: number } | null>(null);
@@ -149,7 +148,7 @@ const RescueGame: React.FC = () => {
   
   // Handle swipe directional controls
   const handleSwipe = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
-    if (gameState !== 'playing' || isSprayingWater) return;
+    if (gameState !== 'playing' || isSprayingFlowers) return;
     
     // Check if next to island and would move towards the island
     if (isNextToIsland) {
@@ -179,11 +178,11 @@ const RescueGame: React.FC = () => {
         moveTruck(1, 0);
         break;
     }
-  }, [gameState, isSprayingWater, isNextToIsland, fireTruckPosition, firePosition, handleFlowerScattering, moveTruck]);
+  }, [gameState, isSprayingFlowers, isNextToIsland, fireTruckPosition, firePosition, handleFlowerScattering, moveTruck]);
 
   // Handle touch start
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (gameState !== 'playing' || isSprayingWater) return;
+    if (gameState !== 'playing' || isSprayingFlowers) return;
     
     // Store the initial touch position
     const touch = e.touches[0];
@@ -193,11 +192,11 @@ const RescueGame: React.FC = () => {
     if (touchTimeoutRef.current !== null) {
       window.clearTimeout(touchTimeoutRef.current);
     }
-  }, [gameState, isSprayingWater]);
+  }, [gameState, isSprayingFlowers]);
 
   // Handle touch end
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (gameState !== 'playing' || !touchStartRef.current || isSprayingWater) return;
+    if (gameState !== 'playing' || !touchStartRef.current || isSprayingFlowers) return;
     
     const touch = e.changedTouches[0];
     const endX = touch.clientX;
@@ -260,7 +259,7 @@ const RescueGame: React.FC = () => {
     touchTimeoutRef.current = window.setTimeout(() => {
       touchTimeoutRef.current = null;
     }, 200);
-  }, [gameState, isSprayingWater, handleSwipe]);
+  }, [gameState, isSprayingFlowers, handleSwipe]);
 
   // Add and remove event listeners
   useEffect(() => {
@@ -512,16 +511,16 @@ const RescueGame: React.FC = () => {
                 // Set background color to black for fire truck cell
                 cellStyle.backgroundColor = '#000';
                 
-                // Determine if water spray should be shown from this fire truck
-                const showWaterSpray = isSprayingWater && isNextToIsland;
+                // Determine if tropical flowers should be shown from this sailboat
+                const showFlowerScatter = isSprayingFlowers && isNextToIsland;
                 
-                // Calculate direction from fire truck to fire
-                let sprayDirection = "0deg";
-                if (showWaterSpray) {
-                  if (fireTruckPosition.x < firePosition.x) sprayDirection = "0deg"; // Spray right
-                  else if (fireTruckPosition.x > firePosition.x) sprayDirection = "180deg"; // Spray left
-                  else if (fireTruckPosition.y < firePosition.y) sprayDirection = "90deg"; // Spray down
-                  else if (fireTruckPosition.y > firePosition.y) sprayDirection = "270deg"; // Spray up
+                // Calculate direction from sailboat to island
+                let scatterDirection = "0deg";
+                if (showFlowerScatter) {
+                  if (fireTruckPosition.x < firePosition.x) scatterDirection = "0deg"; // Scatter right
+                  else if (fireTruckPosition.x > firePosition.x) scatterDirection = "180deg"; // Scatter left
+                  else if (fireTruckPosition.y < firePosition.y) scatterDirection = "90deg"; // Scatter down
+                  else if (fireTruckPosition.y > firePosition.y) scatterDirection = "270deg"; // Scatter up
                 }
                 
                 cellContent = (
@@ -537,11 +536,11 @@ const RescueGame: React.FC = () => {
                       }} 
                     />
                     
-                    {/* Water spray */}
-                    {showWaterSpray && (
+                    {/* Tropical flowers */}
+                    {showFlowerScatter && (
                       <div style={{ 
                         position: 'absolute', 
-                        transform: `rotate(${sprayDirection})`, 
+                        transform: `rotate(${scatterDirection})`, 
                         width: '150%', 
                         height: '150%',
                         display: 'flex',
@@ -556,7 +555,7 @@ const RescueGame: React.FC = () => {
                           style={{ 
                             width: '120%', 
                             height: '120%',
-                            animation: 'spray 0.5s ease-in-out infinite alternate'
+                            animation: 'scatter 0.5s ease-in-out infinite alternate'
                           }} 
                         />
                       </div>
@@ -572,7 +571,7 @@ const RescueGame: React.FC = () => {
                       width: '85%', 
                       height: '85%',
                       animation: gameState === 'won' ? 'shrink 1s linear forwards' : 
-                                isSprayingWater && isNextToIsland ? 'flicker 0.2s ease-in-out infinite' : 
+                                isSprayingFlowers && isNextToIsland ? 'flicker 0.2s ease-in-out infinite' : 
                                 'flicker 0.5s ease-in-out infinite'
                     }} 
                   />

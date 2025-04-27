@@ -5,7 +5,7 @@ interface AudioState {
   hitSound: HTMLAudioElement | null;
   successSound: HTMLAudioElement | null;
   clappingSound: HTMLAudioElement | null;
-  waterSpraySound: HTMLAudioElement | null;
+  flowerScatteringSound: HTMLAudioElement | null;
   isMuted: boolean;
   
   // Setter functions
@@ -13,14 +13,14 @@ interface AudioState {
   setHitSound: (sound: HTMLAudioElement) => void;
   setSuccessSound: (sound: HTMLAudioElement) => void;
   setClappingSound: (sound: HTMLAudioElement) => void;
-  setWaterSpraySound: (sound: HTMLAudioElement) => void;
+  setFlowerScatteringSound: (sound: HTMLAudioElement) => void;
   
   // Control functions
   toggleMute: () => void;
   playHit: () => void;
   playSuccess: () => void;
   playClapping: () => void;
-  playWaterSpray: () => void;
+  playFlowerScattering: () => void;
 }
 
 export const useAudio = create<AudioState>((set, get) => ({
@@ -28,14 +28,14 @@ export const useAudio = create<AudioState>((set, get) => ({
   hitSound: null,
   successSound: null,
   clappingSound: null,
-  waterSpraySound: null,
+  flowerScatteringSound: null,
   isMuted: false, // Start with sound on by default
   
   setBackgroundMusic: (music) => set({ backgroundMusic: music }),
   setHitSound: (sound) => set({ hitSound: sound }),
   setSuccessSound: (sound) => set({ successSound: sound }),
   setClappingSound: (sound) => set({ clappingSound: sound }),
-  setWaterSpraySound: (sound) => set({ waterSpraySound: sound }),
+  setFlowerScatteringSound: (sound) => set({ flowerScatteringSound: sound }),
   
   toggleMute: () => {
     const { isMuted } = get();
@@ -105,21 +105,21 @@ export const useAudio = create<AudioState>((set, get) => ({
     }
   },
   
-  playWaterSpray: () => {
-    const { waterSpraySound, isMuted } = get();
-    if (waterSpraySound) {
+  playFlowerScattering: () => {
+    const { flowerScatteringSound, isMuted } = get();
+    if (flowerScatteringSound) {
       // If sound is muted, don't play anything
       if (isMuted) {
-        console.log("Water spray sound skipped (muted)");
+        console.log("Flower scattering sound skipped (muted)");
         return;
       }
       
       // Clone the sound to allow playing even if already playing
-      const soundClone = waterSpraySound.cloneNode() as HTMLAudioElement;
+      const soundClone = flowerScatteringSound.cloneNode() as HTMLAudioElement;
       soundClone.currentTime = 0;
       soundClone.volume = 0.4; // Slightly lower volume
       soundClone.play().catch(error => {
-        console.log("Water spray sound play prevented:", error);
+        console.log("Flower scattering sound play prevented:", error);
       });
       
       // Stop after 2 seconds
@@ -128,7 +128,7 @@ export const useAudio = create<AudioState>((set, get) => ({
         soundClone.currentTime = 0;
       }, 2000);
     } else {
-      console.log("Water spray sound not loaded");
+      console.log("Flower scattering sound not loaded");
     }
   }
 }));

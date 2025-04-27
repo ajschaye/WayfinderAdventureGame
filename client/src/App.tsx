@@ -7,7 +7,7 @@ const RescueGame = lazy(() => import("./game/RescueGame"));
 
 // Main App component
 function App() {
-  const { setBackgroundMusic, setHitSound, setSuccessSound, setClappingSound, setWaterSpraySound } = useAudio();
+  const { setBackgroundMusic, setHitSound, setSuccessSound, setClappingSound, setFlowerScatteringSound } = useAudio();
   const [loaded, setLoaded] = useState(false);
 
   // Load audio assets
@@ -34,17 +34,17 @@ function App() {
       clappingSfx.volume = 0.3; // Lower volume for better experience
       setClappingSound(clappingSfx);
       
-      // Load water spray sound
-      const waterSpraySfx = new Audio("/sounds/water-spray.mp3");
-      waterSpraySfx.volume = 0.6;
-      setWaterSpraySound(waterSpraySfx);
+      // Load flower scattering sound
+      const flowerScatteringSfx = new Audio("/sounds/flower-scattering.mp3");
+      flowerScatteringSfx.volume = 0.6;
+      setFlowerScatteringSound(flowerScatteringSfx);
     } catch (error) {
       console.error("Error loading audio:", error);
     }
     
     // Mark assets as loaded
     setLoaded(true);
-  }, [setBackgroundMusic, setHitSound, setSuccessSound, setClappingSound, setWaterSpraySound]);
+  }, [setBackgroundMusic, setHitSound, setSuccessSound, setClappingSound, setFlowerScatteringSound]);
 
   return (
     <div style={{ 
