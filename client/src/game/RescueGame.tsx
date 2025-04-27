@@ -11,6 +11,7 @@ import sharkSvg from './assets/shark.svg';
 import coconutSvg from './assets/coconut.svg';
 import giantClamSvg from './assets/giant-clam.svg';
 import waterSpraySvg from './assets/water-spray.svg';
+import tropicalFlowersSvg from './assets/tropical-flowers.svg';
 
 const RescueGame: React.FC = () => {
   const {
@@ -49,42 +50,42 @@ const RescueGame: React.FC = () => {
     (Math.abs(fireTruckPosition.x - firePosition.x) === 1 && fireTruckPosition.y === firePosition.y) || 
     (Math.abs(fireTruckPosition.y - firePosition.y) === 1 && fireTruckPosition.x === firePosition.x);
 
-  // Function to handle water spraying when truck is next to fire
+  // Function to handle scattering tropical flowers when boat is next to island
   const handleFireExtinguishing = useCallback(() => {
     if (!isNextToFire || isSprayingWater) return false;
     
-    // Start spraying water
+    // Start scattering tropical flowers
     setIsSprayingWater(true);
     playWaterSpray();
     
-    // After spraying animation, allow the truck to move to the fire's position
+    // After flower scattering animation, allow the boat to move to the island's position
     setTimeout(() => {
-      console.log("Moving truck to fire position after spraying water");
+      console.log("Moving sailboat to island position after scattering tropical flowers");
       
-      // If the truck is to the left of the fire
+      // If the boat is to the left of the island
       if (fireTruckPosition.x < firePosition.x) {
         moveTruck(1, 0);
       }
-      // If the truck is to the right of the fire
+      // If the boat is to the right of the island
       else if (fireTruckPosition.x > firePosition.x) {
         moveTruck(-1, 0);
       }
-      // If the truck is above the fire
+      // If the boat is above the island
       else if (fireTruckPosition.y < firePosition.y) {
         moveTruck(0, 1);
       }
-      // If the truck is below the fire
+      // If the boat is below the island
       else if (fireTruckPosition.y > firePosition.y) {
         moveTruck(0, -1);
       }
       
       // Check win condition after moving
       setTimeout(() => {
-        console.log("Checking win condition after truck moved to fire");
+        console.log("Checking win condition after sailboat reached the island");
         checkWinCondition();
         setIsSprayingWater(false);
       }, 300); // Increased timeout to ensure movement completes
-    }, 1500); // Spray water for 1.5 seconds before moving
+    }, 1500); // Scatter flowers for 1.5 seconds before moving
     
     return true;
   }, [isNextToFire, isSprayingWater, firePosition, fireTruckPosition, moveTruck, playWaterSpray, checkWinCondition]);
@@ -549,11 +550,11 @@ const RescueGame: React.FC = () => {
                         pointerEvents: 'none'
                       }}>
                         <img 
-                          src={waterSpraySvg} 
-                          alt="Water Spray" 
+                          src={tropicalFlowersSvg} 
+                          alt="Tropical Flowers" 
                           style={{ 
-                            width: '100%', 
-                            height: '100%',
+                            width: '120%', 
+                            height: '120%',
                             animation: 'spray 0.5s ease-in-out infinite alternate'
                           }} 
                         />
