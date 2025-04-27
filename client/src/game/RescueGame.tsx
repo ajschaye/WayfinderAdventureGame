@@ -475,8 +475,9 @@ const RescueGame: React.FC = () => {
               const isFire = x === firePosition.x && y === firePosition.y;
               const isObstacle = obstacles.some(obs => obs.x === x && obs.y === y);
               
-              // Function to check if a position is part of a giant clam
+              // Enhanced function to check if a position is part of a giant clam
               const isPartOfGiantClam = (posX: number, posY: number): Obstacle | undefined => {
+                // Find the first giant clam obstacle that contains this position
                 return obstacles.find(obs => 
                   obs.type === 'giant-clam' && 
                   ((posX === obs.x && posY === obs.y) || // Top-left
@@ -615,13 +616,22 @@ const RescueGame: React.FC = () => {
                     backgroundColor: '#90e0ef', // Light blue background for clam area
                     position: 'relative',
                     boxSizing: 'border-box',
+                    border: 'none', // Reset borders to avoid style conflicts
                   };
                   
                   // Add the appropriate border style based on position
                   if (isTopLeft) {
-                    cellStyle.borderTop = '2px solid #0096c7';
-                    cellStyle.borderLeft = '2px solid #0096c7';
-                    cellStyle.borderTopLeftRadius = '8px';
+                    // Add specific borders for each corner to avoid style conflicts
+                    Object.assign(cellStyle, {
+                      borderTop: '2px solid #0096c7',
+                      borderLeft: '2px solid #0096c7',
+                      borderTopLeftRadius: '8px',
+                      borderRight: 'none',
+                      borderBottom: 'none',
+                      borderTopRightRadius: '0px',
+                      borderBottomLeftRadius: '0px',
+                      borderBottomRightRadius: '0px'
+                    });
                     
                     // Only the top-left cell will hold the image for the entire 2x2 grid
                     cellContent = (
@@ -635,6 +645,7 @@ const RescueGame: React.FC = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         zIndex: 10,
+                        pointerEvents: 'none', // Prevent capturing touch/mouse events
                       }}>
                         <img 
                           src={src} 
@@ -648,19 +659,40 @@ const RescueGame: React.FC = () => {
                       </div>
                     );
                   } else if (isTopRight) {
-                    cellStyle.borderTop = '2px solid #0096c7';
-                    cellStyle.borderRight = '2px solid #0096c7';
-                    cellStyle.borderTopRightRadius = '8px';
+                    Object.assign(cellStyle, {
+                      borderTop: '2px solid #0096c7',
+                      borderRight: '2px solid #0096c7',
+                      borderTopRightRadius: '8px',
+                      borderLeft: 'none',
+                      borderBottom: 'none',
+                      borderTopLeftRadius: '0px',
+                      borderBottomLeftRadius: '0px',
+                      borderBottomRightRadius: '0px'
+                    });
                     cellContent = null;
                   } else if (isBottomLeft) {
-                    cellStyle.borderLeft = '2px solid #0096c7';
-                    cellStyle.borderBottom = '2px solid #0096c7';
-                    cellStyle.borderBottomLeftRadius = '8px';
+                    Object.assign(cellStyle, {
+                      borderLeft: '2px solid #0096c7',
+                      borderBottom: '2px solid #0096c7',
+                      borderBottomLeftRadius: '8px',
+                      borderTop: 'none',
+                      borderRight: 'none',
+                      borderTopRightRadius: '0px',
+                      borderTopLeftRadius: '0px',
+                      borderBottomRightRadius: '0px'
+                    });
                     cellContent = null;
                   } else if (isBottomRight) {
-                    cellStyle.borderRight = '2px solid #0096c7';
-                    cellStyle.borderBottom = '2px solid #0096c7';
-                    cellStyle.borderBottomRightRadius = '8px';
+                    Object.assign(cellStyle, {
+                      borderRight: '2px solid #0096c7',
+                      borderBottom: '2px solid #0096c7',
+                      borderBottomRightRadius: '8px',
+                      borderTop: 'none',
+                      borderLeft: 'none',
+                      borderTopRightRadius: '0px',
+                      borderTopLeftRadius: '0px',
+                      borderBottomLeftRadius: '0px'
+                    });
                     cellContent = null;
                   }
                 } else {
