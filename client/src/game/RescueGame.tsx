@@ -598,97 +598,69 @@ const RescueGame: React.FC = () => {
                 
                 const { src, alt, animation } = getObstacleSvg(obstacle?.type || 'shark');
                 
-                // If it's a giant clam, we need to show it slightly differently
-                // in each of the 4 cells based on their relative position
+                // For giant clams, render each cell as part of the 2x2 grid
                 if (obstacle?.type === 'giant-clam' && giantClamObstacle) {
-                  const topLeft = x === giantClamObstacle.x && y === giantClamObstacle.y;
-                  const topRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y;
-                  const bottomLeft = x === giantClamObstacle.x && y === giantClamObstacle.y + 1;
-                  const bottomRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y + 1;
+                  // Create a single wrapper div that will contain the 2x2 grid
+                  // First determine which corner of the 2x2 grid this cell is
+                  const isTopLeft = x === giantClamObstacle.x && y === giantClamObstacle.y;
+                  const isTopRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y;
+                  const isBottomLeft = x === giantClamObstacle.x && y === giantClamObstacle.y + 1;
+                  const isBottomRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y + 1;
                   
-                  // For giant clams, we need a different approach
-                  if (topLeft) {
-                    // Create a background div for the clam - no absolute positioning
-                    cellStyle = {
-                      width: `${cellSize}px`,
-                      height: `${cellSize}px`,
-                      backgroundColor: '#90e0ef', // Light blue for clam cells
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      border: '2px solid #0096c7', // Thicker border for clam cells
-                      borderRight: 'none', // Connect to the right cell
-                      borderBottom: 'none', // Connect to the bottom cell
-                      boxSizing: 'border-box',
-                      borderTopLeftRadius: '8px', // Round only the outside corners
-                      position: 'relative'
-                    };
+                  // Each cell will simply be a colored background with appropriate borders
+                  cellStyle = {
+                    width: `${cellSize}px`,
+                    height: `${cellSize}px`,
+                    backgroundColor: '#90e0ef', // Light blue background for clam area
+                    position: 'relative',
+                    boxSizing: 'border-box',
+                  };
+                  
+                  // Add the appropriate border style based on position
+                  if (isTopLeft) {
+                    cellStyle.borderTop = '2px solid #0096c7';
+                    cellStyle.borderLeft = '2px solid #0096c7';
+                    cellStyle.borderTopLeftRadius = '8px';
                     
-                    // This is where we'll put the giant clam image
-                    // Position it to cover all 4 cells from the top-left position
+                    // Only the top-left cell will hold the image for the entire 2x2 grid
                     cellContent = (
                       <div style={{
                         position: 'absolute',
                         width: `${cellSize * 2}px`,
                         height: `${cellSize * 2}px`,
+                        top: 0,
+                        left: 0,
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        zIndex: 5
+                        zIndex: 10,
                       }}>
                         <img 
                           src={src} 
                           alt={alt} 
                           style={{ 
-                            width: '90%', 
-                            height: '90%',
+                            width: '85%', 
+                            height: '85%',
                             animation: gameState === 'playing' ? animation : 'none'
                           }} 
                         />
                       </div>
                     );
-                  } else if (topRight) {
-                    // Top-right cell
-                    cellStyle = {
-                      width: `${cellSize}px`,
-                      height: `${cellSize}px`,
-                      backgroundColor: '#90e0ef',
-                      borderTop: '2px solid #0096c7', 
-                      borderRight: '2px solid #0096c7',
-                      borderBottom: 'none',
-                      borderLeft: 'none',
-                      boxSizing: 'border-box',
-                      borderTopRightRadius: '8px'
-                    };
-                    cellContent = null; // No content, the top-left has the image
-                  } else if (bottomLeft) {
-                    // Bottom-left cell
-                    cellStyle = {
-                      width: `${cellSize}px`,
-                      height: `${cellSize}px`,
-                      backgroundColor: '#90e0ef',
-                      borderTop: 'none',
-                      borderRight: 'none',
-                      borderBottom: '2px solid #0096c7',
-                      borderLeft: '2px solid #0096c7',
-                      boxSizing: 'border-box',
-                      borderBottomLeftRadius: '8px'
-                    };
-                    cellContent = null; // No content, the top-left has the image
-                  } else if (bottomRight) {
-                    // Bottom-right cell
-                    cellStyle = {
-                      width: `${cellSize}px`,
-                      height: `${cellSize}px`,
-                      backgroundColor: '#90e0ef',
-                      borderTop: 'none',
-                      borderRight: '2px solid #0096c7',
-                      borderBottom: '2px solid #0096c7',
-                      borderLeft: 'none',
-                      boxSizing: 'border-box',
-                      borderBottomRightRadius: '8px'
-                    };
-                    cellContent = null; // No content, the top-left has the image
+                  } else if (isTopRight) {
+                    cellStyle.borderTop = '2px solid #0096c7';
+                    cellStyle.borderRight = '2px solid #0096c7';
+                    cellStyle.borderTopRightRadius = '8px';
+                    cellContent = null;
+                  } else if (isBottomLeft) {
+                    cellStyle.borderLeft = '2px solid #0096c7';
+                    cellStyle.borderBottom = '2px solid #0096c7';
+                    cellStyle.borderBottomLeftRadius = '8px';
+                    cellContent = null;
+                  } else if (isBottomRight) {
+                    cellStyle.borderRight = '2px solid #0096c7';
+                    cellStyle.borderBottom = '2px solid #0096c7';
+                    cellStyle.borderBottomRightRadius = '8px';
+                    cellContent = null;
                   }
                 } else {
                   // Regular obstacle
