@@ -629,7 +629,7 @@ const RescueGame: React.FC = () => {
       {/* Win message */}
       {gameState === "won" && (
         <div style={{
-          backgroundColor: "rgba(76, 175, 80, 0.9)",
+          backgroundColor: "rgba(0, 119, 182, 0.9)",
           color: "white",
           padding: "20px",
           borderRadius: "8px",
@@ -645,8 +645,8 @@ const RescueGame: React.FC = () => {
           minWidth: "400px",
           maxWidth: "90%"
         }}>
-          Great job! 🎊<br />
-          You put out the fire!
+          Congratulations! 🏝️<br />
+          You've reached the tropical island!
         </div>
       )}
       
@@ -665,10 +665,10 @@ const RescueGame: React.FC = () => {
         }}>
           <p style={{ fontSize: "18px", marginBottom: "8px" }}>
             {isMobile ? 
-              "Swipe in any direction to move the fire truck to the fire!" :
-              "Use arrow keys (or WASD) to move the fire truck to the fire!"}
+              "Swipe in any direction to sail your boat to the tropical island!" :
+              "Use arrow keys (or WASD) to navigate your sailboat to the tropical island!"}
           </p>
-          {gameState === "ready" && <p style={{ fontSize: "18px", margin: 0 }}>Press the Play button to begin.</p>}
+          {gameState === "ready" && <p style={{ fontSize: "18px", margin: 0 }}>Press the Play button to begin your adventure!</p>}
         </div>
       )}
 
