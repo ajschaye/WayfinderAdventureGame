@@ -347,9 +347,22 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
         }
       }
       
+      // Count the effective number of obstacle spaces used
+      const getEffectiveObstacleCount = (obstacles: Obstacle[]): number => {
+        return obstacles.reduce((count, obstacle) => {
+          // Count giant clams as 4 obstacles (2x2 grid spaces)
+          if (obstacle.type === "giant-clam") {
+            return count + 4;
+          }
+          // Regular obstacles count as 1
+          return count + 1;
+        }, 0);
+      };
+      
       // Generate remaining obstacles and ensure there's always a valid path
       attempts = 0;
-      while (newObstacles.length < obstacleCount && attempts < maxAttempts) {
+      // Keep adding obstacles until we reach the specified obstacle count
+      while (getEffectiveObstacleCount(newObstacles) < obstacleCount && attempts < maxAttempts) {
         attempts++;
         
         // Clear obstacles (except the first clam) and try again if too many attempts
@@ -383,7 +396,18 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
           continue;
         }
         
+        // Get the next obstacle type
         const obstacleType = getRandomObstacleType();
+        
+        // Check if adding this obstacle would exceed the total count
+        // Giant clams count as 4 spaces
+        const additionalSpaces = obstacleType === "giant-clam" ? 4 : 1;
+        if (getEffectiveObstacleCount(newObstacles) + additionalSpaces > obstacleCount) {
+          // Skip giant clams when they would put us over the limit, try with regular obstacles
+          if (obstacleType === "giant-clam") {
+            continue;
+          }
+        }
         
         // Temporarily add the obstacle
         newObstacles.push({ ...newPos, type: obstacleType });
@@ -395,6 +419,14 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
           newObstacles
         )) {
           // If no path, remove the last obstacle
+          newObstacles.pop();
+          continue;
+        }
+        
+        // If this is a giant clam, make sure we don't exceed the obstacle count
+        if (obstacleType === "giant-clam" && 
+            getEffectiveObstacleCount(newObstacles) > obstacleCount) {
+          // Remove the giant clam if it puts us over the limit
           newObstacles.pop();
         }
       }
