@@ -606,47 +606,89 @@ const RescueGame: React.FC = () => {
                   const bottomLeft = x === giantClamObstacle.x && y === giantClamObstacle.y + 1;
                   const bottomRight = x === giantClamObstacle.x + 1 && y === giantClamObstacle.y + 1;
                   
-                  // Only show the clam in the top-left cell of the 2x2 grid
+                  // For giant clams, we need a different approach
                   if (topLeft) {
-                    // Create a 2x2 cell for the clam
+                    // Create a background div for the clam - no absolute positioning
                     cellStyle = {
-                      width: `${cellSize * 2}px`, // 2 cells wide
-                      height: `${cellSize * 2}px`, // 2 cells tall
+                      width: `${cellSize}px`,
+                      height: `${cellSize}px`,
                       backgroundColor: '#90e0ef', // Light blue for clam cells
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
                       border: '2px solid #0096c7', // Thicker border for clam cells
+                      borderRight: 'none', // Connect to the right cell
+                      borderBottom: 'none', // Connect to the bottom cell
                       boxSizing: 'border-box',
-                      boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.2)', // Inner shadow for depth
-                      position: 'absolute',
-                      zIndex: 5, // Ensure it's above other elements
-                      borderRadius: '8px'
+                      borderTopLeftRadius: '8px', // Round only the outside corners
+                      position: 'relative'
                     };
                     
-                    // Show the giant clam image only once
+                    // This is where we'll put the giant clam image
+                    // Position it to cover all 4 cells from the top-left position
                     cellContent = (
-                      <img 
-                        src={src} 
-                        alt={alt} 
-                        style={{ 
-                          width: '90%', 
-                          height: '90%',
-                          animation: gameState === 'playing' ? animation : 'none'
-                        }} 
-                      />
+                      <div style={{
+                        position: 'absolute',
+                        width: `${cellSize * 2}px`,
+                        height: `${cellSize * 2}px`,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 5
+                      }}>
+                        <img 
+                          src={src} 
+                          alt={alt} 
+                          style={{ 
+                            width: '90%', 
+                            height: '90%',
+                            animation: gameState === 'playing' ? animation : 'none'
+                          }} 
+                        />
+                      </div>
                     );
-                  } else {
-                    // For the other 3 cells in the 2x2 grid, make them invisible
+                  } else if (topRight) {
+                    // Top-right cell
                     cellStyle = {
                       width: `${cellSize}px`,
                       height: `${cellSize}px`,
-                      opacity: 0, // Make the cell invisible
-                      pointerEvents: 'none' // Don't interact with these cells
+                      backgroundColor: '#90e0ef',
+                      borderTop: '2px solid #0096c7', 
+                      borderRight: '2px solid #0096c7',
+                      borderBottom: 'none',
+                      borderLeft: 'none',
+                      boxSizing: 'border-box',
+                      borderTopRightRadius: '8px'
                     };
-                    
-                    // No content for other cells
-                    cellContent = null;
+                    cellContent = null; // No content, the top-left has the image
+                  } else if (bottomLeft) {
+                    // Bottom-left cell
+                    cellStyle = {
+                      width: `${cellSize}px`,
+                      height: `${cellSize}px`,
+                      backgroundColor: '#90e0ef',
+                      borderTop: 'none',
+                      borderRight: 'none',
+                      borderBottom: '2px solid #0096c7',
+                      borderLeft: '2px solid #0096c7',
+                      boxSizing: 'border-box',
+                      borderBottomLeftRadius: '8px'
+                    };
+                    cellContent = null; // No content, the top-left has the image
+                  } else if (bottomRight) {
+                    // Bottom-right cell
+                    cellStyle = {
+                      width: `${cellSize}px`,
+                      height: `${cellSize}px`,
+                      backgroundColor: '#90e0ef',
+                      borderTop: 'none',
+                      borderRight: '2px solid #0096c7',
+                      borderBottom: '2px solid #0096c7',
+                      borderLeft: 'none',
+                      boxSizing: 'border-box',
+                      borderBottomRightRadius: '8px'
+                    };
+                    cellContent = null; // No content, the top-left has the image
                   }
                 } else {
                   // Regular obstacle

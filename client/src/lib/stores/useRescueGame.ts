@@ -263,15 +263,10 @@ export const useRescueGame = create<RescueGameState>((set: StoreApi, get) => {
     const truckX = Math.floor(gridSize.x / 2);
     const truckY = gridSize.y - 1;
     
-    // Generate random fire position in the top third of the grid
-    let fireX: number, fireY: number;
-    do {
-      fireX = Math.floor(Math.random() * gridSize.x);
-      // Calculate the top third of the grid (floor of gridSize.y / 3)
-      const topThirdMax = Math.floor(gridSize.y / 3);
-      // Place fire in the top third (0 to topThirdMax - 1)
-      fireY = Math.floor(Math.random() * topThirdMax);
-    } while (fireX === truckX && fireY === truckY);
+    // Place the tropical island at a fixed position at the top center
+    // This ensures it's always in a predictable location and won't overlap with giant clams
+    const fireX = Math.floor(gridSize.x / 2);
+    const fireY = 0;
     
     // Generate obstacles
     const newObstacles: Obstacle[] = [];
