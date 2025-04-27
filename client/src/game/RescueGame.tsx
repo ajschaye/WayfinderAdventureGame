@@ -334,18 +334,18 @@ const RescueGame: React.FC = () => {
         width: "100%",
         padding: "15px 5px",
         margin: "0 0 20px 0",
-        backgroundColor: "#ffd166",
+        backgroundColor: "#4cc9f0",
         borderRadius: "8px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
         textAlign: "center",
-        color: "#d62828",
+        color: "#03045e",
         fontWeight: "bold",
         fontSize: "32px", // Reduced font size for better fit
         position: "sticky",
         top: 0,
         zIndex: 10
       }}>
-        🚒 Fire Rescue Adventure 🚒
+        ⛵ The Wayfinder's Adventure ⛵
       </div>
       
       {/* Game controls panel */}
