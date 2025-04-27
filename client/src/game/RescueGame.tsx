@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useRescueGame, ObstacleType, MAX_OBSTACLE_PERCENTAGE } from '../lib/stores/useRescueGame';
+import { useRescueGame, ObstacleType, Obstacle, MAX_OBSTACLE_PERCENTAGE } from '../lib/stores/useRescueGame';
 import { useAudio } from '../lib/stores/useAudio';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Confetti } from '../components/game/Confetti';
