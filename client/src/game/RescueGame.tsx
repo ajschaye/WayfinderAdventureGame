@@ -45,14 +45,14 @@ const RescueGame: React.FC = () => {
   // State to track if the water spray effect is active
   const [isSprayingWater, setIsSprayingWater] = useState(false);
   
-  // Calculate if the truck is next to the fire (but not on it)
-  const isNextToFire = 
+  // Calculate if the sailboat is next to the island (but not on it)
+  const isNextToIsland = 
     (Math.abs(fireTruckPosition.x - firePosition.x) === 1 && fireTruckPosition.y === firePosition.y) || 
     (Math.abs(fireTruckPosition.y - firePosition.y) === 1 && fireTruckPosition.x === firePosition.x);
 
   // Function to handle scattering tropical flowers when boat is next to island
-  const handleFireExtinguishing = useCallback(() => {
-    if (!isNextToFire || isSprayingWater) return false;
+  const handleFlowerScattering = useCallback(() => {
+    if (!isNextToIsland || isSprayingWater) return false;
     
     // Start scattering tropical flowers
     setIsSprayingWater(true);
@@ -88,7 +88,7 @@ const RescueGame: React.FC = () => {
     }, 1500); // Scatter flowers for 1.5 seconds before moving
     
     return true;
-  }, [isNextToFire, isSprayingWater, firePosition, fireTruckPosition, moveTruck, playWaterSpray, checkWinCondition]);
+  }, [isNextToIsland, isSprayingWater, firePosition, fireTruckPosition, moveTruck, playWaterSpray, checkWinCondition]);
 
   // Handle keyboard input
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -99,15 +99,15 @@ const RescueGame: React.FC = () => {
     
     if (gameState !== 'playing' || isSprayingWater) return;
 
-    // If next to fire and the key would move towards the fire, start spraying
-    if (isNextToFire) {
-      const wouldMoveToFire = 
+    // If next to island and the key would move towards the island, start scattering flowers
+    if (isNextToIsland) {
+      const wouldMoveToIsland = 
         (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') && fireTruckPosition.x < firePosition.x ||
         (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && fireTruckPosition.x > firePosition.x ||
         (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && fireTruckPosition.y < firePosition.y ||
         (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && fireTruckPosition.y > firePosition.y;
       
-      if (wouldMoveToFire && handleFireExtinguishing()) {
+      if (wouldMoveToIsland && handleFlowerScattering()) {
         return;
       }
     }
@@ -137,7 +137,7 @@ const RescueGame: React.FC = () => {
       default:
         return;
     }
-  }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
+  }, [gameState, isSprayingWater, isNextToIsland, fireTruckPosition, firePosition, handleFlowerScattering, moveTruck]);
 
   // References for swipe detection
   const touchStartRef = useRef<{ x: number, y: number } | null>(null);
@@ -151,15 +151,15 @@ const RescueGame: React.FC = () => {
   const handleSwipe = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
     if (gameState !== 'playing' || isSprayingWater) return;
     
-    // Check if next to fire and would move towards the fire
-    if (isNextToFire) {
-      const wouldMoveToFire = 
+    // Check if next to island and would move towards the island
+    if (isNextToIsland) {
+      const wouldMoveToIsland = 
         (direction === 'right') && fireTruckPosition.x < firePosition.x ||
         (direction === 'left') && fireTruckPosition.x > firePosition.x ||
         (direction === 'down') && fireTruckPosition.y < firePosition.y ||
         (direction === 'up') && fireTruckPosition.y > firePosition.y;
       
-      if (wouldMoveToFire && handleFireExtinguishing()) {
+      if (wouldMoveToIsland && handleFlowerScattering()) {
         return;
       }
     }
@@ -179,7 +179,7 @@ const RescueGame: React.FC = () => {
         moveTruck(1, 0);
         break;
     }
-  }, [gameState, isSprayingWater, isNextToFire, fireTruckPosition, firePosition, handleFireExtinguishing, moveTruck]);
+  }, [gameState, isSprayingWater, isNextToIsland, fireTruckPosition, firePosition, handleFlowerScattering, moveTruck]);
 
   // Handle touch start
   const handleTouchStart = useCallback((e: React.TouchEvent) => {

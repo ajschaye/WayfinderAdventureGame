@@ -6,8 +6,8 @@ import * as THREE from "three";
 import { useRescueGame } from "../lib/stores/useRescueGame";
 import { useAudio } from "../lib/stores/useAudio";
 
-// Create a simple 3D representation of a fire truck
-const FireTruck = ({ position }: { position: [number, number, number] }) => {
+// Create a simple 3D representation of a sailboat
+const Sailboat = ({ position }: { position: [number, number, number] }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const { 
     gameState, 
@@ -81,15 +81,17 @@ const FireTruck = ({ position }: { position: [number, number, number] }) => {
         setIsMoving(prev => ({ ...prev, right: true }));
       }
       
-      // Check if the truck has reached the fire
+      // Check if the boat has reached the island
       checkWinCondition();
     }
     
-    // Animate fire truck (bobbing up and down)
+    // Animate sailboat (bobbing on the water)
     if (gameState === "playing") {
       meshRef.current.position.y = position[1] + Math.sin(Date.now() * 0.003) * 0.05;
+      // Add gentle rocking motion
+      meshRef.current.rotation.z = Math.sin(Date.now() * 0.001) * 0.05;
     } else if (gameState === "won") {
-      // Celebratory spinning animation when game is won
+      // Celebratory animation when game is won
       meshRef.current.rotation.y += delta * 2;
     }
   });
@@ -101,41 +103,32 @@ const FireTruck = ({ position }: { position: [number, number, number] }) => {
         position={position}
         scale={[0.4, 0.2, 0.3]}
       >
-        {/* Truck body */}
-        <boxGeometry args={[1, 1, 1.5]} />
-        <meshStandardMaterial color="red" />
+        {/* Boat hull */}
+        <boxGeometry args={[1, 0.4, 1.5]} />
+        <meshStandardMaterial color="#d8e2dc" /> {/* Light colored hull */}
         
-        {/* Truck cab */}
-        <mesh position={[0, 0.5, 0.4]}>
-          <boxGeometry args={[0.8, 0.5, 0.7]} />
-          <meshStandardMaterial color="#880000" />
+        {/* Boat deck */}
+        <mesh position={[0, 0.25, 0]}>
+          <boxGeometry args={[0.9, 0.1, 1.4]} />
+          <meshStandardMaterial color="#ffe6a7" /> {/* Wooden deck */}
         </mesh>
         
-        {/* Wheels */}
-        <group position={[0.3, -0.5, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
-          <meshStandardMaterial color="black" />
-        </group>
+        {/* Mast */}
+        <mesh position={[0, 0.9, 0.2]} rotation={[0, 0, 0]}>
+          <cylinderGeometry args={[0.04, 0.04, 1.3, 8]} />
+          <meshStandardMaterial color="#774936" /> {/* Wooden mast */}
+        </mesh>
         
-        <group position={[-0.3, -0.5, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
-          <meshStandardMaterial color="black" />
-        </group>
+        {/* Sail */}
+        <mesh position={[0.2, 0.9, 0.2]} rotation={[0, 0, Math.PI / 8]}>
+          <boxGeometry args={[0.05, 0.8, 0.6]} />
+          <meshStandardMaterial color="white" />
+        </mesh>
         
-        <group position={[0.3, -0.5, -0.4]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
-          <meshStandardMaterial color="black" />
-        </group>
-        
-        <group position={[-0.3, -0.5, -0.4]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
-          <meshStandardMaterial color="black" />
-        </group>
-        
-        {/* Ladder */}
-        <mesh position={[0, 0.6, -0.2]} rotation={[0, 0, Math.PI / 4]}>
-          <boxGeometry args={[0.1, 1, 0.1]} />
-          <meshStandardMaterial color="gray" />
+        {/* Secondary sail */}
+        <mesh position={[0, 0.6, -0.3]} rotation={[0, 0, 0]}>
+          <boxGeometry args={[0.7, 0.5, 0.05]} />
+          <meshStandardMaterial color="#e9edc9" /> {/* Off-white sail */}
         </mesh>
       </mesh>
       
@@ -150,7 +143,7 @@ const FireTruck = ({ position }: { position: [number, number, number] }) => {
             fontSize: "12px",
             whiteSpace: "nowrap"
           }}>
-            Use arrow keys to move me!
+            Use arrow keys to navigate!
           </div>
         </Html>
       )}
@@ -158,4 +151,4 @@ const FireTruck = ({ position }: { position: [number, number, number] }) => {
   );
 };
 
-export default FireTruck;
+export default Sailboat;

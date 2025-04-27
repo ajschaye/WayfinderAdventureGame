@@ -3,8 +3,8 @@ import { OrthographicCamera } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useRescueGame } from "../lib/stores/useRescueGame";
 import GameGrid from "./GameGrid";
-import FireTruck from "./FireTruck";
-import Fire from "./Fire";
+import Sailboat from "./Sailboat";
+import Island from "./Island";
 import Obstacle from "./Obstacle";
 import Controls from "./Controls";
 import * as THREE from "three";
@@ -50,8 +50,8 @@ const Game = () => {
         {/* Game Grid */}
         <GameGrid />
 
-        {/* Fire Truck */}
-        <FireTruck 
+        {/* Sailboat */}
+        <Sailboat 
           position={[
             fireTruckPosition.x - (gridSize.x - 1) / 2, 
             0.1, 
@@ -59,8 +59,8 @@ const Game = () => {
           ]} 
         />
 
-        {/* Fire */}
-        <Fire 
+        {/* Island */}
+        <Island 
           position={[
             firePosition.x - (gridSize.x - 1) / 2, 
             0.1, 

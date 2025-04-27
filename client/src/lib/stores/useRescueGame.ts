@@ -28,8 +28,8 @@ interface RescueGameState {
   gridSize: Position;
   obstacleCount: number;
   gameState: GameState;
-  fireTruckPosition: Position;
-  firePosition: Position;
+  fireTruckPosition: Position; // Will be renamed in a future update - represents sailboat position
+  firePosition: Position;      // Will be renamed in a future update - represents island position
   obstacles: Obstacle[];
   moveCooldown: boolean;
   visitsCount: number;       // Track total visits to the game
@@ -39,7 +39,7 @@ interface RescueGameState {
   // Actions
   setGridSize: (x: number, y: number) => void;
   setObstacleCount: (count: number) => void;
-  moveTruck: (dx: number, dy: number) => void;
+  moveTruck: (dx: number, dy: number) => void; // Will be renamed in a future update - moves the sailboat
   checkWinCondition: () => void;
   startGame: () => void;
   stopGame: () => void;
